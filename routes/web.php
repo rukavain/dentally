@@ -22,22 +22,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-
-
-
-
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware(['auth'])->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return redirect('/home'); // Redirect to your desired location
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile-overview', [ProfileController::class, 'profileOverview'])->name('profile');
