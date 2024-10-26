@@ -15,13 +15,28 @@ use App\Http\Controllers\adminPanel\ProcedureController;
 use App\Http\Controllers\dentistPanel\DentistController;
 use App\Http\Controllers\patientPanel\PatientController;
 use App\Http\Controllers\patientPanel\PaymentController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Route::get('/dashboard', [ClientController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+
+
+
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware(['auth'])->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/home'); // Redirect to your desired location
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,26 +61,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/preview-email', function () {
-    $user = Auth::user(); // Or pass a mock user instance for testing
-    $notification = new VerifyEmail();
 
-    return $notification->toMail($user);
-});
-
-Route::get('/send-test-email', function () {
-    $details = [
-        'subject' => 'Test Email from Laravel',
-        'body' => 'This is a test email sent from Laravel using Mailtrap.'
-    ];
-
-    Mail::raw($details['body'], function ($message) use ($details) {
-        $message->to('recipient@example.com')
-                ->subject($details['subject']);
-    });
-
-    return 'Test email has been sent!';
-});
 
 // Route::get('/test-email', function () {
 //     $details = [
@@ -77,14 +73,13 @@ Route::get('/send-test-email', function () {
 
 //     return 'Test email sent!';
 // });
-Route::group(['middleware' => ['auth', 'verified','role:admin,staff,dentist']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff,dentist']], function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 
 //remove dentist here
-Route::group(['middleware' => ['auth', 'verified','role:admin,staff']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff']], function () {
     Route::get('/patient-list', [PatientController::class, 'patient_list'])->name('patient_list');
     Route::get('/schedule', [AdminController::class, 'schedule'])->name('schedule');
     Route::get('/inventory', [InventoryController::class, 'inventory'])->name('inventory');
@@ -93,7 +88,7 @@ Route::group(['middleware' => ['auth', 'verified','role:admin,staff']], function
 
     //Image Upload
     Route::post('/upload-image', [ImageController::class, 'uploadImage'])->name('upload.image');
-    
+
     //Schedule
     Route::get('/admin/add-dentist-schedule', [ScheduleController::class, 'addSchedule'])->name('add.schedule');
     Route::post('/dentist-schedule', [ScheduleController::class, 'storeSchedule'])->name('store.schedule');
@@ -104,7 +99,7 @@ Route::group(['middleware' => ['auth', 'verified','role:admin,staff']], function
 
     // Route::get('/admin/scheduled-dates/{dentistId}', [ScheduleController::class, 'fetchScheduledDates']);
     Route::get('/scheduled-dates/{dentistId}', [ScheduleController::class, 'fetchScheduledDates']);
-    
+
     //Payment TEsting
     Route::get('{id}/payment-list', [PaymentController::class, 'paymentList'])->name('payments.list');
     Route::get('/patient/{id}/payment', [PaymentController::class, 'create'])->name('payments.form');
@@ -114,7 +109,7 @@ Route::group(['middleware' => ['auth', 'verified','role:admin,staff']], function
     Route::get('{id}/payment-list/pending', [PaymentController::class, 'pendingPayment'])->name('payments.pending');
     Route::post('/payments/{id}/approve', [PaymentController::class, 'approvePayment'])->name('payments.approve');
 
-    
+
     //Testing
     Route::get('/appointments/show-appointment/{appointment}', [AppointmentController::class, 'show'])->name('show.appointment');
     Route::get('/appointments/walk-in-request', [AppointmentController::class, 'walkInAppointment'])->name('appointments.walkIn');
@@ -161,8 +156,6 @@ Route::group(['middleware' => ['auth', 'verified','role:admin,staff']], function
 
     //Sale report
     Route::get('/sales-report', [AdminController::class, 'salesReport'])->name('sales');
-
-
 });
 
 // Admin Routes
@@ -190,9 +183,6 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
 
     //Audit Log
     Route::get('/audit-logs', [AdminController::class, 'viewAuditLogs'])->name('audit.logs');
-    
-
-    
 });
 
 // Staff Routes
@@ -202,7 +192,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:staff']], function () {
 
 });
 // Dentist Routes
-Route::group(['middleware' => ['auth','verified', 'role:dentist']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:dentist']], function () {
     Route::get('/dentist/{dentist}/dashboard', [DentistController::class, 'overview'])->name('dentist.dashboard');
     // Route::get('/staff/patient-list', [StaffController::class, 'patient_list'])->name('patient_list');
 
@@ -222,8 +212,6 @@ Route::group(['middleware' => ['auth','verified', 'role:dentist']], function () 
     Route::get('/dentist/payment/{id}', [DentistController::class, 'createDentistPayment'])->name('dentist.paymentForm');
     Route::post('dentist/payment/{id}/store', [DentistController::class, 'storeDentistPartialPayment'])->name('dentist.paymentStore');
     Route::get('/dentist/{paymentId}/history', [DentistController::class, 'showDentistPaymentHistory'])->name('dentist.paymentHistory');
-
-
 });
 
 
