@@ -15,8 +15,8 @@ class TestMail extends Mailable
 
     public function build()
     {
-        return $this->from('you@yourdomain.com')
-                    ->to('recipient@example.com')
+        return $this->from('no-reply@toothimpressionsdentalclinic.xyz')
+                    ->to('magtoto599@gmail.com')
                     ->subject('Test Email from Deployed Laravel App')
                     ->view('emails.test');
     }
