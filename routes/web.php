@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\TestMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -47,16 +48,11 @@ require __DIR__ . '/auth.php';
 
 
 
-// Route::get('/test-email', function () {
-//     $details = [
-//         'title' => 'Test Email',
-//         'body' => 'This is a test email sent via MailSlurp SMTP.'
-//     ];
+Route::get('/send-test-mail', function () {
+    Mail::send(new TestMail());
+    return 'Test email sent!';
+});
 
-//     Mail::to('d30a96df-fe79-46d7-861f-1a5551ae1780@mailslurp.net')->send(new \App\Mail\TestMail($details));
-
-//     return 'Test email sent!';
-// });
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff,dentist']], function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
