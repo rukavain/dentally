@@ -34,14 +34,14 @@ class AuthenticatedSessionController extends Controller
     //         return redirect()->route('admin.dashboard');
     //     } elseif($request->user()->role === 'staff'){
     //         return redirect()->route('receptionist.dashboard');
-    //     }   
+    //     }
 
     //     return redirect()->intended(RouteServiceProvider::HOME);
     // }
 
     // public function store(LoginRequest $request): RedirectResponse
     // {
-   
+
     //     $request->validate([
     //         'email' => 'required|string|email',
     //         'password' => 'required|string',
@@ -66,7 +66,7 @@ class AuthenticatedSessionController extends Controller
     //             return redirect()->intended(RouteServiceProvider::HOME);
 
     //         }
-    
+
     //     }
 
     //     return back()->withErrors([

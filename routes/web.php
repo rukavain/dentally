@@ -13,15 +13,20 @@ use App\Http\Controllers\staffPanel\StaffController;
 use App\Http\Controllers\clientPanel\ClientController;
 use App\Http\Controllers\adminPanel\InventoryController;
 use App\Http\Controllers\adminPanel\ProcedureController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\dentistPanel\DentistController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\patientPanel\PatientController;
 use App\Http\Controllers\patientPanel\PaymentController;
+use App\Mail\Email;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,10 +53,12 @@ require __DIR__ . '/auth.php';
 
 
 
-Route::get('/send-test-mail', function () {
-    Mail::send(new TestMail());
-    return 'Test email sent!';
-});
+// Route::get('/send-test-mail', function () {
+//     Mail::send(new TestMail());
+//     return 'Test email sent!';
+// });
+
+// Route::get('/send-mail', [EmailController::class, 'sendHelloEmail']);
 
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff,dentist']], function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -193,7 +200,6 @@ Route::group(['middleware' => ['auth', 'verified', 'role:dentist']], function ()
     Route::post('dentist/payment/{id}/store', [DentistController::class, 'storeDentistPartialPayment'])->name('dentist.paymentStore');
     Route::get('/dentist/{paymentId}/history', [DentistController::class, 'showDentistPaymentHistory'])->name('dentist.paymentHistory');
 });
-
 
 //Client Routes
 Route::group(['middleware' => ['auth', 'verified', 'role:client']], function () {

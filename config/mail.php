@@ -37,23 +37,40 @@ return [
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
-            'port' => env('MAIL_PORT', 2525),
-            'encryption' => env('MAIL_ENCRYPTION', 'null'),
-	    'driver' => env('MAIL_MAILER', 'smtp'),
-            'username' => env('32db357c0fee52'),
-            'password' => env('f40aa6bbb5e746'),
+            'host' => env('MAIL_HOST'),
+            'port' => env('MAIL_PORT'),
+            'encryption' => env('MAIL_ENCRYPTION'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
-
-            'stream' => [
-                'ssl' => [
-                    'allow_self_signed' => true,
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ],
-            ],
         ],
+        // 'smtp' => [
+        //     'transport' => 'smtp',
+        //     'url' => env('MAIL_URL'),
+        //     'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
+        //     'port' => env('MAIL_PORT', 2525),
+        //     'encryption' => env('MAIL_ENCRYPTION', 'null'),
+	    // 'driver' => env('MAIL_MAILER', 'smtp'),
+        //     'username' => env('32db357c0fee52'),
+        //     'password' => env('f40aa6bbb5e746'),
+        //     'timeout' => null,
+        //     'local_domain' => env('MAIL_EHLO_DOMAIN'),
+
+        //     'stream' => [
+        //         'ssl' => [
+        //             'allow_self_signed' => true,
+        //             'verify_peer' => false,
+        //             'verify_peer_name' => false,
+        //         ],
+        //     ],
+        // // ],
+        // 'smtp' => [
+        //     'username' => env('MAIL_USERNAME'),
+        //     'password' => env('MAIL_PASSWORD'),
+        //     'timeout' => null,
+        //     'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST))
+        // ],
 
         'ses' => [
             'transport' => 'ses',
@@ -96,13 +113,13 @@ return [
             ],
         ],
 
-        'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
-                'ses',
-                'postmark',
-            ],
-        ],
+        // 'roundrobin' => [
+        //     'transport' => 'roundrobin',
+        //     'mailers' => [
+        //         'ses',
+        //         'postmark',
+        //     ],
+        // ],
     ],
 
     /*

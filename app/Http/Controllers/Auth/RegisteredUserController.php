@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class RegisteredUserController extends Controller
 {
@@ -56,12 +57,17 @@ class RegisteredUserController extends Controller
         ]);
 
         // Create login credentials for the patient in users table
+        $data = $request->all();
+
+        $data['password'] = Hash::make($request->password);
+
         $user = User::create([
             'username' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'patient_id' => $patient->id, // Link to the patient via foreign key
         ]);
+
 
         event(new Registered($user));
 
@@ -85,4 +91,5 @@ class RegisteredUserController extends Controller
         $user->sendEmailVerificationNotification();
         return redirect(RouteServiceProvider::HOME);
     }
+
 }
