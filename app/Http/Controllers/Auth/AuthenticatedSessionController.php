@@ -87,14 +87,14 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user(); // Get the authenticated user
 
-        // Check if the user's email is verified
-        if (!$user->hasVerifiedEmail()) {
-            // Send a verification link
-            $user->sendEmailVerificationNotification();
+        // // Check if the user's email is verified
+        // if (!$user->hasVerifiedEmail()) {
+        //     // Send a verification link
+        //     $user->sendEmailVerificationNotification();
 
-            // Optionally, you can redirect to a specific route with a message
-            return redirect()->route('verification.notice')->with('status', 'Verification link sent! Please check your email.');
-        }
+        //     // Optionally, you can redirect to a specific route with a message
+        //     return redirect()->route('verification.notice')->with('status', 'Verification link sent! Please check your email.');
+        // }
 
         // Store patient_id in session if it exists
         if ($user->patient_id) {
