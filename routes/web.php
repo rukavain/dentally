@@ -1,11 +1,8 @@
 <?php
 
-use App\Mail\TestMail;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\adminPanel\AdminController;
 use App\Http\Controllers\adminPanel\ImageController;
@@ -13,13 +10,9 @@ use App\Http\Controllers\staffPanel\StaffController;
 use App\Http\Controllers\clientPanel\ClientController;
 use App\Http\Controllers\adminPanel\InventoryController;
 use App\Http\Controllers\adminPanel\ProcedureController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\dentistPanel\DentistController;
-use App\Http\Controllers\EmailController;
 use App\Http\Controllers\patientPanel\PatientController;
 use App\Http\Controllers\patientPanel\PaymentController;
-use App\Mail\Email;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 Route::get('/', function () {
