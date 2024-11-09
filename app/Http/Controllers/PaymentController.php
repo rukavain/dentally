@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
-    public function pay(){
-
-
+    public function pay(Request $request){
 
         $data = [
             'data' => [
@@ -20,17 +19,17 @@ class PaymentController extends Controller
                         'line_items' => [
                                 [
                                     'currency' => 'PHP',
-                                    'amount' => 10000,
+                                    'amount' => 10000, //10000 = 100PESOS
                                     'description' => 'text',
                                     'name' => 'Test Product',
                                     'quantity' => 1,
                                 ]
                             ],
                         'payment_method_types' => [
-                            'card',
+                            'gcash',
                         ],
                         'success_url' => 'https://toothimpressionsdentalclinic.xyz/success',
-                        'cancel_url' => 'https://toothimpressionsdentalclinic.xyz/cancel',
+                        'cancel_url' => 'https://toothimpressionsdentalclinic.xyz',
                         'description' => 'text',
                     ]
                 ]
@@ -55,6 +54,7 @@ class PaymentController extends Controller
     }
 
     public function success(){
+        $user_id = Auth::user();
 
         $sessionId = Session::get('session_id');
 
@@ -64,8 +64,7 @@ class PaymentController extends Controller
             ->asJson()
             ->get();
 
-            dd($response);
-
+            return redirect()->intended(RouteServiceProvider::HOME);
     }
 
 }
