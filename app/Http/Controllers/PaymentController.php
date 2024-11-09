@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
-    public function pay(Request $request){
+    public function pay(){
 
         $data = [
             'data' => [
@@ -19,7 +19,7 @@ class PaymentController extends Controller
                         'line_items' => [
                                 [
                                     'currency' => 'PHP',
-                                    'amount' => 100, //10000 = 100PESOS
+                                    'amount' => 1000, //10000 = 100PESOS
                                     'description' => 'text',
                                     'name' => 'Test Product',
                                     'quantity' => 1,
