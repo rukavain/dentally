@@ -13,6 +13,7 @@ class PaymentController extends Controller
     public function pay(){
 
 
+        dd("asd");
 
         $data = [
             'data' => [
@@ -48,7 +49,6 @@ class PaymentController extends Controller
             ->withOption('SSL_VERIFYPEER', false)
             ->post();
 
-        dd($response);
 
         Session::put('session_id', $response->data->id);
 
