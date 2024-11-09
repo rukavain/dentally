@@ -11,6 +11,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "paymongo/paymongo-php": "^0.0.0",
         "stripe/stripe-php": "^16.2",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1"

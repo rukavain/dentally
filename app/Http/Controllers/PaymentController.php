@@ -12,6 +12,8 @@ class PaymentController extends Controller
 {
     public function pay(){
 
+
+
         $data = [
             'data' => [
                 'attributes' => [
@@ -27,8 +29,8 @@ class PaymentController extends Controller
                         'payment_method_types' => [
                             'card',
                         ],
-                        'success_url' => 'https://toothimpressionsdentalclinic.xyz/success',
-                        'cancel_url' => 'https://toothimpressionsdentalclinic.xyz/cancel',
+                        'success_url' => 'https://localhost:8000/success',
+                        'cancel_url' => 'http://localhost:8000/cancel',
                         'description' => 'text',
                     ]
                 ]
@@ -42,6 +44,8 @@ class PaymentController extends Controller
             ->withHeader('Authorization: Basic c2tfdGVzdF9NMU5EOUpzRWtCNVQyNUxCZ0hySEwyZmk6')
             ->withData($data)
             ->asJson()
+            ->withOption('SSL_VERIFYHOST', false)
+            ->withOption('SSL_VERIFYPEER', false)
             ->post();
 
         Session::put('session_id', $response->data->id);

@@ -85,7 +85,9 @@ class AuthenticatedSessionController extends Controller
     if (Auth::attempt($request->only('email', 'password'))) {
         $request->session()->regenerate();
 
-        $user = Auth::user(); // Get the authenticated user
+        $user = Auth::user();
+
+        // Get the authenticated user
 
         // // Check if the user's email is verified
         // if (!$user->hasVerifiedEmail()) {
