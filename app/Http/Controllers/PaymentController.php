@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Ixudra\Curl\Facades\Curl;
-use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -47,7 +45,7 @@ class PaymentController extends Controller
             ->withOption('SSL_VERIFYPEER', false)
             ->post();
 
-
+dd($response);
         Session::put('session_id', $response->data->id);
 
         return redirect()->to($response->data->attributes->checkout_url);
