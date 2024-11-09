@@ -48,6 +48,8 @@ class PaymentController extends Controller
             ->withOption('SSL_VERIFYPEER', false)
             ->post();
 
+        dd($response);
+
         Session::put('session_id', $response->data->id);
 
         return redirect()->to($response->data->attributes->checkout_url);
