@@ -18,6 +18,9 @@
                     <a href="{{ route('client.overview', Auth::user()->patient_id) }}"
                     class="min-w-max  bg-green-600 rounded-md py-4 max-md:text-sm px-8 font-bold text-white hover:bg-green-700 transition-all">
                     BOOK NOW</a>
+                    <a href="{{ route('client.overview', Auth::user()->patient_id) }}"
+                        class="min-w-max  bg-orange-600 rounded-md py-4 max-md:text-sm px-8 font-bold text-white hover:bg-green-700 transition-all">
+                        PAY NOW</a>
                     @else
                     <a href="{{route('login')}}" class="min-w-max  bg-green-600 rounded-md py-4 max-md:text-sm px-8 font-bold text-white hover:bg-green-700 transition-all">
                         BOOK NOW

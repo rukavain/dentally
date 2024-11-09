@@ -13,7 +13,7 @@ use App\Http\Controllers\adminPanel\ProcedureController;
 use App\Http\Controllers\dentistPanel\DentistController;
 use App\Http\Controllers\patientPanel\PatientController;
 use App\Http\Controllers\patientPanel\PaymentController;
-
+use App\Http\Controllers\PaymentController as ControllersPaymentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -195,7 +195,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:dentist']], function ()
 });
 
 //Client Routes
-Route::group(['middleware' => ['auth', 'verified', 'role:client']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:client',]], function () {
     Route::get('/client/dashboard', [ClientController::class, 'dashboard'])->name('dashboard'); //for redirection
     Route::get('/client/dashboard/overview/{id}', [ClientController::class, 'profileOverview'])->name('client.overview');
     Route::get('/client/records/{id}', [ClientController::class, 'clientRecords'])->name('client.records');
@@ -207,6 +207,12 @@ Route::group(['middleware' => ['auth', 'verified', 'role:client']], function () 
 
     Route::post('client/upload-proof', [ClientController::class, 'uploadProof'])->name('client.proof');
 
+
+
     // Route::get('/appointment/request', [AppointmentController::class, 'create'])->name('appointments.request');
     // Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointments.store');
 });
+
+
+Route::get('pay', [ControllersPaymentController::class, 'pay']);
+Route::get('success', [ControllersPaymentController::class, 'success']);
