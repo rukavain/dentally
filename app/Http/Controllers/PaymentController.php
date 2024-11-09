@@ -17,7 +17,7 @@ class PaymentController extends Controller
                         'line_items' => [
                                 [
                                     'currency' => 'PHP',
-                                    'amount' => 1000, //10000 = 100PESOS
+                                    'amount' => 2000, //10000 = 100PESOS
                                     'description' => 'text',
                                     'name' => 'Test Product',
                                     'quantity' => 1,
@@ -45,7 +45,6 @@ class PaymentController extends Controller
             ->withOption('SSL_VERIFYPEER', false)
             ->post();
 
-dd($response);
         Session::put('session_id', $response->data->id);
 
         return redirect()->to($response->data->attributes->checkout_url);
