@@ -13,11 +13,6 @@ class PaymentController extends Controller
 {
     public function pay(Request $request){
 
-        if(Session::get('session_id') == null){
-            return redirect()->intended(RouteServiceProvider::HOME);
-        }
-
-
         $data = [
             'data' => [
                 'attributes' => [
