@@ -15,9 +15,12 @@ class TestMail extends Mailable
 
     public function build()
     {
-        return $this->from('no-reply@toothimpressionsdentalclinic.xyz')
-                    ->to('magtoto599@gmail.com')
-                    ->subject('Test Email from Deployed Laravel App')
-                    ->view('emails.test');
+        // return $this->from('no-reply@toothimpressionsdentalclinic.xyz')
+        //             ->to('magtoto599@gmail.com')
+        //             ->subject('Test Email from Deployed Laravel App')
+        //             ->view('emails.test');
+
+        return $this->view('emails.test')
+                    ->subject('Mailjet Test Email');
     }
 }

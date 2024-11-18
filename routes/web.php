@@ -14,6 +14,8 @@ use App\Http\Controllers\dentistPanel\DentistController;
 use App\Http\Controllers\patientPanel\PatientController;
 use App\Http\Controllers\patientPanel\PaymentController;
 use App\Http\Controllers\PaymentController as ControllersPaymentController;
+use App\Mail\TestMail;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,6 +47,10 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 
+Route::get('/send-test-email', function () {
+    Mail::to('giocode007@gmail.com')->send(new TestMail());
+    return 'Email send successfully!';
+});
 
 // Route::get('/send-test-mail', function () {
 //     Mail::send(new TestMail());
@@ -207,7 +213,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:client',]], function ()
 
     Route::post('client/upload-proof', [ClientController::class, 'uploadProof'])->name('client.proof');
 
-    Route::get('pay', [ControllersPaymentController::class, 'pay']);
+    Route::post('/client/{appointmentId}/pay', [ControllersPaymentController::class, 'testPay'])->name('client.pay');
     Route::get('success', [ControllersPaymentController::class, 'success']);
 
     // Route::get('/appointment/request', [AppointmentController::class, 'create'])->name('appointments.request');

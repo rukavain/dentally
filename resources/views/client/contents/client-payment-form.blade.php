@@ -143,7 +143,7 @@
                 </div>
             </div>
             <div class="flex flex-col justify-center">
-                <form id="paymentForm" method="POST">
+                <form id="paymentForm" method="POST" action="{{route('client.pay', $appointment->id)}}">
                     @method('POST')
                     @csrf
                     <div class="">
@@ -151,7 +151,7 @@
 
                         <div class="mt-4">
                             <label for="paid_amount" class="block text-sm font-medium">Amount to Pay:</label>
-                            <input type="number" name="paid_amount" id="paid_amount"
+                            <input type="number" name="paid_amount" id="paid_amount" min="100"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-green-500"
                                 required>
                         </div>
@@ -160,26 +160,35 @@
                             <label for="payment_method" class="block text-sm font-medium">Payment Method:</label>
                             <select name="payment_method" id="payment_method"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-green-500"
-                                required>
-                                <option value="cash">Cash</option>
-                                <option value="credit card">Credit Card</option>
-                                <option value="bank transfer">Bank Transfer</option>
+                                required onchange="togglePaymentOptions()">
+                                <option value="gcash">Gcash</option>
+                                <option value="maya">Maya</option>
+                                <option value="card">Card</option>
                             </select>
                         </div>
+
 
                         <div class="mt-4">
                             <label for="remarks" class="block text-sm font-medium">Remarks:</label>
                             <textarea name="remarks" id="remarks"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-green-500"></textarea>
                         </div>
-                        <div class="my-4">
+                        <div id="payment_proof_section"  class="my-4">
                             <label for="payment_proof" class="block text-sm font-medium">Upload Proof of Payment:</label>
                             <input type="file" name="payment_proof" id="payment_proof" accept="image/*"
                                 class="mt-1 block  border p-2 text-sm w-full rounded-md shadow-sm focus:ring focus:ring-green-500"
-                                required>
+                                >
                         </div>
+
                     </div>
                     <div class="w-full flex justify-between gap-2 mt-4">
+                        <div id="redirect_button_section" class="w-full gap-2 mt-4 hidden">
+                            <button type="submit" class="w-full flex justify-center items-center py-2 px-8 text-center max-md:py-2 max-md:text-xs font-semibold rounded-md bg-green-600 text-white transition-all">
+                                Redirect to Paymongo
+                            </button>
+                        </div>
+
+                        <div id="proof_button_section" class="w-full flex justify-between gap-2 mt-4">
                         <button
                             class="flex justify-center items-center  py-2 px-8 text-center max-md:py-2 max-md:text-xs font-semibold rounded-md bg-green-600  text-white transition-all"
                             type="button" id="submitPaymentBtnClient">
@@ -196,6 +205,7 @@
                             type="reset">
                             Cancel
                         </a>
+                        </div>
                     </div>
                 </form>
 
@@ -314,5 +324,23 @@
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+
+        function togglePaymentOptions() {
+        const paymentMethod = document.getElementById('payment_method').value;
+        const paymentProofSection = document.getElementById('payment_proof_section');
+        const redirectButtonSection = document.getElementById('redirect_button_section');
+        const proofButtonSection = document.getElementById('proof_button_section');
+
+        if (paymentMethod === 'card') {
+            paymentProofSection.classList.add('hidden');
+            proofButtonSection.classList.add('hidden');
+            redirectButtonSection.classList.remove('hidden');
+        } else {
+            paymentProofSection.classList.remove('hidden');
+            proofButtonSection.classList.remove('hidden');
+            redirectButtonSection.classList.add('hidden');
+        }
+    }
     </script>
 @endsection

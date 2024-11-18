@@ -18,13 +18,13 @@ use Illuminate\Support\Facades\Hash;
 
 class PaymentController extends Controller
 {
-   
+
     public function create($appointmentId)
     {
         $appointment = Appointment::with(['patient', 'procedure', 'dentist'])->find($appointmentId);
 
         if (!$appointment) {
-            return redirect()->route('appointments.submission')->with('error', 'Appointment not found.');
+            return redirect()->route('appointments.walkIn')->with('error', 'Appointment not found.');
         }
 
         $payment = Payment::where('appointment_id', $appointment->id)->first();
@@ -166,7 +166,7 @@ class PaymentController extends Controller
     {
         // Find the pending payment record
         $pendingPayment = TemporaryPayment::findOrFail($id);
-        
+
         // Retrieve the appointment details
         $appointment = Appointment::with(['procedure', 'patient'])->find($pendingPayment->payment->appointment_id);
 
