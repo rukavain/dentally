@@ -1,1 +1,3 @@
-<p>please verify your email <a href="">verify email</a></p>
+<p>Hello, </p>
+<p>Please verify your email by clicking the button below:</p>
+<a href="{{ $url }}">Verify Email</a>

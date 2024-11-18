@@ -20,7 +20,7 @@ class TestMail extends Mailable
         //             ->subject('Test Email from Deployed Laravel App')
         //             ->view('emails.test');
 
-        return $this->view('emails.test')
+        return $this->view('emails.mail')
                     ->subject('Mailjet Test Email');
     }
 }
