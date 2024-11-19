@@ -34,14 +34,28 @@ class AppointmentApproved extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $appointment = $this->appointment;
+        $procedureName = $appointment->procedure ? $appointment->procedure->name : 'Not specified';
+        $dentistName = $appointment->dentist ? $appointment->dentist->full_name : 'Not assigned';
+        $formattedDate = date('F j, Y', strtotime($appointment->appointment_date));
+
         return (new MailMessage)
-                    ->subject('Appointment Approved')
-                    ->greeting('Hello ' . $this->appointment->first_name . ' ' . $this->appointment->last_name . ',')
-                    ->line('Your appointment request has been approved.')
-                    ->line('Appointment Date: ' . $this->appointment->appointment_date)
-                    ->line('Preferred Time: ' . $this->appointment->preferred_time)
-                    ->line('Branch: ' . $this->appointment->branch)
-                    ->line('Thank you for choosing our clinic!');
+            ->subject('Your Dental Appointment has been Confirmed!')
+            ->greeting('Hello ' . $appointment->patient->first_name . '!')
+            ->line('Great news! Your appointment request has been approved.')
+            ->line('Here are the details of your upcoming visit:')
+            ->line('Date: ' . $formattedDate)
+            ->line('Time: ' . $appointment->preferred_time)
+            ->line('Procedure: ' . $procedureName)
+            ->line('Dentist: ' . $dentistName)
+            ->line('Branch: ' . $appointment->branch->branch_loc)
+            ->line('Important Reminders:')
+            ->line('1. Please arrive 10-15 minutes before your scheduled appointment')
+            ->line('2. Bring any relevant medical records or x-rays')
+            ->line('3. If you need to reschedule, please notify us at least 24 hours in advance')
+            ->action('View Appointment Details', url('/client/dashboard/overview', $appointment->patient_id))
+            ->line('Thank you for choosing Tooth Impression\'s Dental Clinic. We look forward to seeing you!')
+            ->salutation('Best regards,' . "\n" . 'The Tooth Impression\'s Dental Clinic Team');
     }
 
     /**

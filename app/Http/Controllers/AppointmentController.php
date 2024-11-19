@@ -206,18 +206,47 @@ class AppointmentController extends Controller
         }
 
         // Create the new appointment record
-        $appointment = Appointment::create([
-            'patient_id' => $validatedData['patient_id'],
-            'dentist_id' => $validatedData['dentist_id'],
-            'branch_id' => $validatedData['branch_id'],
-            'schedule_id' => $validatedData['schedule_id'], // Store the selected schedule
-            'proc_id' => $validatedData['proc_id'], // Store the selected schedule
-            'appointment_date' => $validatedData['appointment_date'],
-            'preferred_time' => $validatedData['preferred_time'], // Store the selected time slot
-            'status' => 'scheduled',
-            'pending' => 'pending', // Assuming appointments are pending initially
-            'is_online' => $validatedData['is_online'],
-        ]);
+        if (is_array($validatedData['proc_id'])) {
+            foreach ($validatedData['proc_id'] as $procId) {
+                $appointment = Appointment::create([
+                    'patient_id' => $validatedData['patient_id'],
+                    'dentist_id' => $validatedData['dentist_id'],
+                    'branch_id' => $validatedData['branch_id'],
+                    'schedule_id' => $validatedData['schedule_id'],
+                    'proc_id' => $procId,
+                    'appointment_date' => $validatedData['appointment_date'],
+                    'preferred_time' => $validatedData['preferred_time'],
+                    'status' => 'scheduled',
+                    'pending' => 'pending',
+                    'is_online' => $validatedData['is_online'],
+                ]);
+
+                // Send notification to admin and staff users
+                $users = User::whereIn('role', ['admin', 'staff', 'dentist'])->get();
+                foreach ($users as $user) {
+                    $user->notify(new NewAppointmentNotification($appointment));
+                }
+            }
+        } else {
+            $appointment = Appointment::create([
+                'patient_id' => $validatedData['patient_id'],
+                'dentist_id' => $validatedData['dentist_id'],
+                'branch_id' => $validatedData['branch_id'],
+                'schedule_id' => $validatedData['schedule_id'],
+                'proc_id' => $validatedData['proc_id'],
+                'appointment_date' => $validatedData['appointment_date'],
+                'preferred_time' => $validatedData['preferred_time'],
+                'status' => 'scheduled',
+                'pending' => 'pending',
+                'is_online' => $validatedData['is_online'],
+            ]);
+
+            // Send notification to admin and staff users
+            $users = User::whereIn('role', ['admin', 'staff', 'dentist'])->get();
+            foreach ($users as $user) {
+                $user->notify(new NewAppointmentNotification($appointment));
+            }
+        }
         $patient = Patient::findOrFail($id);
 
         return redirect()->route('client.overview', compact('patient', 'id'))->with('success', 'Appointment successfully created!');
@@ -284,12 +313,15 @@ class AppointmentController extends Controller
         $appointment->Pending = 'Approved';
         $appointment->save();
 
-        $patient = $appointment->patient; // Assuming the relationship is defined in the Appointment model
-        $patient->next_visit = $appointment->appointment_date; // Set next visit to the appointment date
+        $patient = $appointment->patient;
+        $patient->next_visit = $appointment->appointment_date;
         $patient->branch_id = $appointment->branch_id;
-        $patient->save(); // Save the updated patient record
+        $patient->save();
 
-        Notification::route('mail', $appointment->email)->notify(new AppointmentApproved($appointment));
+        $user = User::where('patient_id', $patient->id)->first();
+        if($user) {
+            $user->notify(new AppointmentApproved($appointment));
+        }
 
         return redirect()->back()->with('success', 'Appointment approved and email sent.');
     }
@@ -300,7 +332,10 @@ class AppointmentController extends Controller
         $appointment->Pending = 'Declined';
         $appointment->save();
 
-        Notification::route('mail', $appointment->email)->notify(new AppointmentDeclined($appointment));
+        $user = User::where('patient_id', $appointment->patient_id)->first();
+        if($user) {
+            $user->notify(new AppointmentDeclined($appointment));
+        }
 
         return redirect()->back()->with('success', 'Appointment declined and email sent.');
     }

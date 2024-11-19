@@ -34,12 +34,27 @@ class AppointmentDeclined extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $appointment = $this->appointment;
+        $procedureName = $appointment->procedure ? $appointment->procedure->name : 'Not specified';
+        $formattedDate = date('F j, Y', strtotime($appointment->appointment_date));
+
         return (new MailMessage)
-                    ->subject('Appointment Declined')
-                    ->greeting('Hello ' . $this->appointment->first_name . ' ' . $this->appointment->last_name . ',')
-                    ->line('We regret to inform you that your appointment request has been declined.')
-                    ->line('Branch: ' . $this->appointment->branch)
-                    ->line('Thank you for understanding.');
+            ->subject('Update Regarding Your Dental Appointment Request')
+            ->greeting('Hello ' . $appointment->patient->first_name . ',')
+            ->line('We appreciate your interest in scheduling an appointment with Tooth Impression\'s Dental Clinic.')
+            ->line('Unfortunately, we are unable to accommodate your appointment request for the following details:')
+            ->line('Date: ' . $formattedDate)
+            ->line('Time: ' . $appointment->preferred_time)
+            ->line('Procedure: ' . $procedureName)
+            ->line('Branch: ' . $appointment->branch->branch_loc)
+            ->line('This could be due to various reasons such as:')
+            ->line('1. Schedule conflicts')
+            ->line('2. Dentist availability')
+            ->line('3. Equipment maintenance')
+            ->action('Schedule New Appointment', url('/client/dashboard/overview', $appointment->patient_id))
+            ->line('We encourage you to schedule a new appointment at your convenience. Our team is ready to assist you in finding a suitable time.')
+            ->line('If you have any questions or need immediate assistance, please don\'t hesitate to contact us.')
+            ->salutation('Best regards,' . "\n" . 'The Tooth Impression\'s Dental Clinic Team');
     }
 
     /**

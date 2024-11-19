@@ -174,7 +174,7 @@ class InventoryController extends Controller
         session()->flash('success', 'Item updated successfully!');
     }
 
-    public function deleteItem($id)
+    public function deleteItem(Request $request, $id)
     {
         $item = Inventory::findOrFail($id);
 
@@ -183,7 +183,7 @@ class InventoryController extends Controller
         AuditLog::create([
             'action' => 'Delete',
             'model_type' => 'Item deleted',
-            'model_id' => $inventory->id,
+            'model_id' => $item->id,
             'user_id' => auth()->id(),
             'user_email' => auth()->user()->email,
             'changes' => json_encode($request->all()), // Log the request data
