@@ -174,8 +174,10 @@
                             <select id="hmo_company" name="hmo_company" onchange="toggleOtherHmoField()"
                                 class="border border-gray-400 py-2 px-4 rounded-md max-md:text-xs max-md:py-1 max-md:px-2">
                                 <option value="">Select HMO</option>
-                                <option value="HMO1">HMO1</option>
-                                <option value="HMO2">HMO2</option>
+                                <option value="Maxicare">Maxicare</option>
+                                <option value="PhilHealth">PhilHealth</option>
+                                <option value="Medicard">Medicard</option>
+                                <option value="Intellicare">Intellicare</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>

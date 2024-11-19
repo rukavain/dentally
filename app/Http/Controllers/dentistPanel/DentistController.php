@@ -29,7 +29,7 @@ class DentistController extends Controller
 
 
         $totalAppointments = Appointment::count();
-        $todayAppointment = Appointment::whereDate('appointment_date', $today)->count();
+        $todayAppointment = Appointment::whereDate('appointment_date', $today)->where('status', '!=', 'Cancelled')->count();
         $newAppointments = Appointment::whereDate('created_at', $today)->count();
 
         $onlineAppointments = Appointment::where('is_online', '1')->orderBy('created_at', 'desc')->take(3)->count();
@@ -55,11 +55,12 @@ class DentistController extends Controller
         ->where('is_archived', 0)
         ->with(['patient', 'procedure', 'branch'])
         ->paginate(5, ['*'], 'pending_page');
-        
+
     $appointmentPaymentInformation = Appointment::with(['patient', 'procedure', 'dentist'])->find($appointmentId);
 
     $pendingAppointmentsInformation = Appointment::where('dentist_id', $id)
         ->where('pending', 'Pending')
+        ->where('status', '!=', 'Cancelled')
         ->where('is_archived', 0)
         ->orderBy('created_at', 'desc') // Order by created_at (or appointment_date if that's preferred)
         ->take(3) // Limit to 3 recent appointments
@@ -68,6 +69,7 @@ class DentistController extends Controller
     // Fetch approved appointments for the dentist, limited to the most recent 3
     $approvedAppointmentsInformation = Appointment::where('dentist_id', $id)
         ->where('pending', 'approved')
+        ->where('status', '!=', 'Cancelled')
         ->where('is_archived', 0)
         ->orderBy('created_at', 'desc') // Order by created_at (or appointment_date)
         ->take(3) // Limit to 3 recent appointments
@@ -103,33 +105,6 @@ class DentistController extends Controller
         return view('dentist.contents.overview', compact('totalAppointments', 'newAppointments', 'todayAppointment'));
     }
 
-    public function dentistAppointments($id)
-    {
-        // Get the logged-in dentist's ID
-        $dentist = Dentist::find($id);
-
-
-        // Fetch pending and approved appointments separately
-        $pendingAppointments = Appointment::where('dentist_id', $id)
-            ->where('pending', 'Pending')
-            ->where('is_archived', 0)
-            ->with(['patient', 'procedure', 'branch'])
-            ->paginate(5, ['*'], 'pending_page'); // Custom pagination query param
-
-        $approvedAppointments = Appointment::where('dentist_id', $id)
-            ->where('pending', 'approved')
-            ->where('is_archived', 0)
-            ->with(['patient', 'procedure', 'branch'])
-            ->paginate(5, ['*'], 'approved_page'); // Custom pagination query param
-
-        $appointmentIds = $pendingAppointments->pluck('id')->merge($approvedAppointments->pluck('id'));
-
-        // Fetch payments related to the dentist's appointments
-        $payments = Payment::whereIn('appointment_id', $appointmentIds)->paginate(5, ['*'], 'payment'); // Custom pagination query param
-
-        return view('dentist.contents.overview', compact('dentist', 'pendingAppointments', 'approvedAppointments', 'payments'));
-    }
-
     public function pendingAppointment($id)
     {
         $dentist = Dentist::find($id);
@@ -138,6 +113,7 @@ class DentistController extends Controller
         // Fetch pending and approved appointments separately
         $pendingAppointments = Appointment::where('dentist_id', $id)
             ->where('pending', 'Pending')
+            ->where('status', '!=', 'Cancelled')
             ->where('is_archived', 0)
             ->with(['patient', 'procedure', 'branch'])
             ->paginate(5, ['*'], 'pending_page'); // Custom pagination query param
@@ -153,6 +129,7 @@ class DentistController extends Controller
 
         $approvedAppointments = Appointment::where('dentist_id', $id)
             ->where('pending', 'approved')
+            ->where('status', '!=', 'Cancelled')
             ->where('is_archived', 0)
             ->with(['patient', 'procedure', 'branch'])
             ->paginate(5, ['*'], 'approved_page'); // Custom pagination query param
@@ -165,6 +142,7 @@ class DentistController extends Controller
         $dentist = Dentist::find($id);
         $declinedAppointments = Appointment::where('dentist_id', $id)
             ->where('pending', 'declined')
+            ->where('status', '!=', 'Cancelled')
             ->where('is_archived', 0)
             ->with(['patient', 'procedure', 'branch'])
             ->paginate(5, ['*'], 'declined_page'); // Custom pagination query param
@@ -354,7 +332,7 @@ class DentistController extends Controller
         // Start and end times from the schedule
         $startTime = new \DateTime($schedule->start_time);
         $endTime = new \DateTime($schedule->end_time);
-        // $appointmentDuration = $schedule->appointment_duration; 
+        // $appointmentDuration = $schedule->appointment_duration;
         $appointmentDuration = 60; // Duration in minutes
 
         // Array to store time slots
@@ -412,7 +390,7 @@ class DentistController extends Controller
         $totalPaid = $payment ? $payment->total_paid : 0;
         $balanceRemaining = $appointment->procedure->price - $totalPaid;
 
-        return view('dentist.contents.dentist-payment-form', compact('appointment', 'payment', 'totalPaid'));
+        return view('dentist.contents.dentist-payment-form', compact('appointment', 'payment', 'totalPaid', 'balanceRemaining'));
     }
 
     public function storeDentistPartialPayment(Request $request)

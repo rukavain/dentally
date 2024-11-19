@@ -88,7 +88,13 @@
             </div>
         </section>
         <section class="max-lg:mt-12">
-            <h1 class="text-3xl font-bold mb-6">Personal Information</h1>
+            <div class="flex items-center gap-4 mb-6">
+                <h1 class="text-3xl font-bold ml-4">Personal Information</h1>
+                    <button onclick="document.getElementById('hmoModal').classList.remove('hidden')"
+                        class="flex text-sm items-center justify-start gap-2 py-1 px-4 font-semibold border border-gray-500 rounded-md hover:border-gray-700 hover:shadow-sm transition-all">
+                        <h1>HMO</h1>
+                    </button>
+            </div>
             <form method="POST" action="{{ route('update.patient', $patient->id) }}">
                 @method('PUT')
                 @csrf
@@ -171,41 +177,6 @@
                             @enderror
                         </label>
 
-                        @if ($patient->has_hmo)
-                            <label class="flex flex-col flex-1 min-w-[45%] max-md:text-sm" for="next_visit">
-                                <h1>HMO Company</h1>
-                                <select id="hmo_company" name="hmo_company" onchange="toggleOtherHmoField()"
-                                    class="border border-gray-400 py-2 px-4 rounded-md max-md:text-xs max-md:py-1 max-md:px-2">
-                                    <option value="">Select HMO</option>
-                                    <option value="HMO1"
-                                        {{ old('hmo_company', $patient->hmo_company) == 'HMO1' ? 'selected' : '' }}>
-                                        HMO1
-                                    </option>
-                                    <option value="HMO2"
-                                        {{ old('hmo_company', $patient->hmo_company) == 'HMO2' ? 'selected' : '' }}>
-                                        HMO2
-                                    </option>
-                                    <option value="other"
-                                        {{ old('hmo_company', $patient->hmo_company) == 'other' ? 'selected' : '' }}>
-                                        Other: {{ $patient->hmo_company }}
-                                    </option> {{-- <option value="HMO2">
-                                        {{ old('hmo_company', $patient->hmo_company) == 'HMO2' ? 'selected' : '' }}>
-                                        HMO2
-                                    </option>
-                                    <option value="other">
-                                        {{ old('hmo_company', $patient->hmo_company) == 'other' ? 'selected' : '' }}>
-                                        Other
-                                    </option> --}}
-                                </select>
-                                @error('hmo_company')
-                                    <span id="next_visit_error"
-                                        class="validation-message text-red-600 text-xs p-1 rounded-md show">{{ $message }}</span>
-                                @enderror
-                            </label>
-                        @else
-                        @endif
-
-
                         <label class="flex flex-col flex-1 min-w-[45%] max-md:text-sm" for="phone_number">
                             <h1>Phone number</h1>
                             <input class="border border-gray-400 py-2 px-4 rounded-md" name="phone_number" type="text"
@@ -280,51 +251,123 @@
         </section>
     </section>
 
-    {{-- <section class="bg-white max-lg:mt-14 m-4 p-8 shadow-lg rounded-md flex flex-wrap justify-between z-0">
-        <div class="flex  w-full max-lg:flex-col flex-wrap justify-between items-start">
-            <div class="flex w-full flex-wrap justify-between items-start">
-                <div class="flex flex-wrap justify-between mb-6 gap-4 items-start ">
-                    <div class="flex flex-col">
-                        <div>
-                            <h1 class="text-5xl mb-4 font-bold max-md:text-3xl">
-                            </h1>
-                            <div class="flex flex-col justify-start items-start gap-3 text-md mb-5">
-                                <h1 class=" max-md:text-sm"> Gender: <span class="font-semibold">
-                                        {{ $patient->patient_gender }}
-                                    </span>
-                                </h1>
-                                <h1 class=" max-md:text-sm"> Birth date: <span class="font-semibold">
-                                        {{ $patient->patient_birth_date }}
-                                    </span>
-                                </h1>
-                                <h1 class=" max-md:text-sm"> patient specialization: <span class="font-semibold">
-                                        {{ $patient->patient_specialization }}
-                                    </span>
-                                </h1>
-                                <h1 class=" max-md:text-sm"> Branch: <span class="font-semibold">
-                                        @if ($patient->branch_id === 1)
-                                            Dau
-                                        @elseif($patient->branch_id === 2)
-                                            Angeles
-                                        @elseif($patient->branch_id === 3)
-                                            Sindalan
-                                        @endif
-                                    </span> </h1>
-                                <h1 class=" max-md:text-sm"> Phone number: <span class="font-semibold">
-                                        {{ $patient->patient_phone_number }}
-                                    </span> </h1>
+    <!-- HMO Modal -->
+    <div id="hmoModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="flex flex-col gap-4">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between border-b pb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">HMO Information</h3>
+                    <button onclick="document.getElementById('hmoModal').classList.add('hidden')"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <form method="POST" action="{{ route('update.patient.hmo', $patient->id) }}" class="space-y-4">
+                    @method('PUT')
+                    @csrf
+                    <div class="w-full">
+                        <label for="hmo">Do you have an HMO?</label>
+                        <input type="hidden" name="has_hmo" value="{{$patient->has_hmo ? '1' : '0'}}">
+                        <input type="checkbox" id="hmo" name="has_hmo" value="1" {{ $patient->has_hmo ? 'checked' : '' }} onclick="toggleHmoFields()">
+                    </div>
+
+                    <div id="hmoFields" class="flex flex-col flex-1" style="display: {{ $patient->has_hmo ? 'block' : 'none' }};">
+                        <div class="flex gap-4 max-md:gap-2">
+                            <div class="flex flex-col flex-1">
+                                <label for="hmo_company">
+                                    <h1 class="max-md:text-sm">Select HMO Company</h1>
+                                </label>
+                                <select id="patient_hmo_company" name="hmo_company" onchange="toggleOtherHmoField()"
+                                    class="border border-gray-400 py-2 px-4 rounded-md max-md:text-xs max-md:py-1 max-md:px-2">
+                                    <option value="">Select HMO</option>
+                                    <option value="Maxicare" {{ $patient->hmo_company == 'Maxicare' ? 'selected' : '' }}>Maxicare</option>
+                                    <option value="PhilHealth" {{ $patient->hmo_company == 'PhilHealth' ? 'selected' : '' }}>PhilHealth</option>
+                                    <option value="Medicard" {{ $patient->hmo_company == 'Medicard' ? 'selected' : '' }}>Medicard</option>
+                                    <option value="Intellicare" {{ $patient->hmo_company == 'Intellicare' ? 'selected' : '' }}>Intellicare</option>
+                                    <option value="other" {{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? 'selected' : '' }}>Other</option>
+                                </select>
                             </div>
-                            <a class="flex justify-center gap-3 items-center border border-slate-600 rounded-md py-2 px-4 max-md:py-1 max-md:px-2 text-white font-semibold hover:bg-gray-400 transition-all w-max"
-                                href=" {{ route('edit.patient', $patient->id) }} ">
-                                <img class="h-7 sm:h-4 sm:w-4 max-sm:h-4 max-sm:w-4"
-                                    src="{{ asset('assets/images/edit-icon.png') }}" alt="">
-                                <h1 class="text-slate-900 max-md:hidden">Edit information</h1>
-                            </a>
+                            <div id="patient_otherHmo" class="flex flex-col flex-1" style="display: {{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? 'block' : 'none' }};">
+                                <label for="other_hmo_name">
+                                    <h1 class="max-md:text-sm">Enter HMO Company Name:</h1>
+                                </label>
+                                <input type="text" id="other_hmo_name" name="other_hmo_name"
+                                    value="{{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? $patient->hmo_company : '' }}"
+                                    class="w-full max-md:text-sm max-md:py-1 max-md:px-2 border border-gray-400 py-2 px-4 rounded-md">
+                            </div>
+                        </div>
+                        <div class="flex gap-4 max-md:gap-2">
+                            <label for="hmo_number" class="flex flex-col flex-1">
+                                <h1 class="max-md:text-sm">HMO Number:</h1>
+                                <input type="text" id="hmo_number" name="hmo_number" value="{{ $patient->hmo_number }}"
+                                    class="w-full max-md:text-sm max-md:py-1 max-md:px-2 border border-gray-400 py-2 px-4 rounded-md">
+                            </label>
+                            <label for="hmo_type" class="flex flex-col flex-1">
+                                <h1 class="max-md:text-sm">Type of HMO:</h1>
+                                <input type="text" id="hmo_type" name="hmo_type" value="{{ $patient->hmo_type }}"
+                                    class="w-full max-md:text-sm max-md:py-1 max-md:px-2 border border-gray-400 py-2 px-4 rounded-md">
+                            </label>
                         </div>
                     </div>
 
-
-                </div>
+                    <!-- Form Actions -->
+                    <div class="flex justify-end gap-3 pt-4 border-t">
+                        <button type="button" onclick="document.getElementById('hmoModal').classList.add('hidden')"
+                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
-    </section> --}}
+        </div>
+    </div>
+
+    <script>
+        function toggleHmoFields() {
+            const hmoCheckbox = document.getElementById('hmo');
+            const hmoFields = document.getElementById('hmoFields');
+            const hasHmoInput = document.querySelector('input[type="hidden"][name="has_hmo"]');
+
+            hmoFields.style.display = hmoCheckbox.checked ? 'block' : 'none';
+            hasHmoInput.value = hmoCheckbox.checked ? '1' : '0';
+
+            if (!hmoCheckbox.checked) {
+                document.getElementById('patient_hmo_company').value = '';
+                document.getElementById('other_hmo_name').value = '';
+                document.getElementById('hmo_number').value = '';
+                document.getElementById('hmo_type').value = '';
+                toggleOtherHmoField();
+            }
+        }
+
+        function toggleOtherHmoField() {
+            const hmoCompanySelect = document.getElementById('patient_hmo_company');
+            const otherHmo = document.getElementById('patient_otherHmo');
+            const otherHmoInput = document.getElementById('other_hmo_name');
+
+            otherHmo.style.display = hmoCompanySelect.value === 'other' ? 'block' : 'none';
+
+            if (hmoCompanySelect.value !== 'other') {
+                otherHmoInput.value = '';
+            }
+        }
+
+        // Initialize the form state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const hmoCheckbox = document.getElementById('hmo');
+            toggleHmoFields();
+            toggleOtherHmoField();
+        });
+    </script>
 @endsection

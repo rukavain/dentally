@@ -9,9 +9,43 @@ use App\Http\Controllers\Controller;
 
 class ProcedureController extends Controller
 {
-    public function procedure()
+    public function procedure(Request $request)
     {
-        $procedures = Procedure::all();
+        $query = Procedure::query();
+
+        // Handle search
+        if ($request->has('search') && !empty($request->get('search'))) {
+            $searchTerm = $request->get('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('id', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Get sort direction, default to 'asc' if not specified
+        $direction = $request->get('direction', 'asc');
+
+        // Handle sorting
+        if ($request->has('sort')) {
+            $sortOption = $request->get('sort');
+            switch ($sortOption) {
+                case 'code':
+                    $query->orderBy('id', $direction);
+                    break;
+                case 'name':
+                    $query->orderBy('name', $direction);
+                    break;
+                case 'price':
+                    $query->orderBy('price', $direction);
+                    break;
+                default:
+                    $query->orderBy('id', 'asc');
+            }
+        } else {
+            $query->orderBy('id', 'asc');
+        }
+
+        $procedures = $query->paginate(10)->appends($request->except('page'));
         return view('admin.procedure.procedure', compact('procedures'));
     }
 

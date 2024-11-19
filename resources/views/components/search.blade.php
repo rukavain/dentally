@@ -114,28 +114,31 @@
         @if (Auth::user()->role === 'Admin')
             <div class="flex gap-4 items-center justify-center">
                 <form method="GET" class="flex justify-center items-center gap-2"
-                    action="{{ route('patient.active') }} ">
-                    @csrf
-                    <img class="h-12" src="{{ asset('assets/images/search-icon.png') }}" alt="">
-                    <input placeholder="Search..." autocomplete="off" name="search" type="search"
-                        class="py-2 px-4 border-gray-400 rounded-md">
-                    <button type="submit"
-                        class="shadow-md py-2 px-6 rounded-md bg-white hover:bg-gray-800 hover:text-white transition-all">
-                        Search
-                    </button>
-                </form>
-            </div>
-        @else
-        @endif
-        <div id="user-container" class="flex justify-center items-center gap-2 cursor-pointer self-center">
-            <details id="user-dropdown"
-                class="self-center bg-white rounded-md border dropdown absolute right-0 top-0 justify-self-center">
-                <summary class="flex my-2 self-center justify-center items-center gap-2 py-2 px-8 text-sm">
-                    @if (Auth::user()->role === 'Admin')
+                action="{{ route('patient.active') }} ">
+                @csrf
+                <img class="h-12" src="{{ asset('assets/images/search-icon.png') }}" alt="">
+                <input placeholder="Search..." autocomplete="off" name="search" type="search"
+                class="py-2 px-4 border-gray-400 rounded-md">
+                <button type="submit"
+                class="shadow-md py-2 px-6 rounded-md bg-white hover:bg-gray-800 hover:text-white transition-all">
+                Search
+            </button>
+        </form>
+    </div>
+    @else
+    @endif
+    <div id="user-container" class="flex justify-center items-center gap-2 cursor-pointer self-center">
+        <details id="user-dropdown"
+        class="self-center bg-white rounded-md border dropdown absolute right-0 top-0 justify-self-center">
+        <summary class="flex my-2 self-center justify-center items-center gap-4 py-2 px-8 text-sm">
+                    @if (Auth::user()->role === 'admin')
+                        @include('components.notification-bell')
                         <p class="text-md font-semibold max-w-sm">{{ Auth::user()->username }}</p>
-                    @elseif(Auth::user()->role === 'Dentist')
+                    @elseif(Auth::user()->role === 'dentist')
+                        @include('components.notification-bell')
                         <p class="text-md font-semibold max-w-sm">{{ Auth::user()->username }}</p>
-                    @elseif(Auth::user()->role === 'Staff')
+                    @elseif(Auth::user()->role === 'staff')
+                        @include('components.notification-bell')
                         <p class="text-md font-semibold max-w-sm">{{ Auth::user()->username }}</p>
                     @else
                         <p class="text-md font-semibold max-w-xs">{{ Auth::user()->username }}</p>
@@ -160,7 +163,6 @@
                             <p class="text-xs font-semibold max-w-xs">{{ Auth::user()->username }}
                             </p>
                         @endif
-
                     </div>
 
                     @if (Auth::user()->role === 'admin')

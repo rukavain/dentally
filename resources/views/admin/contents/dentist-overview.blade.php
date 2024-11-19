@@ -8,13 +8,24 @@
     </div>
     <section class=" m-4 max-lg:mt-14 px-4 pb-4 bg-white shadow-lg rounded-md">
         <div class="flex items-center justify-between py-4 max-md:py-2">
-            <label class="flex items-center gap-2" for="time">
-                <h1 class="font-bold text-3xl max-md:text-xl">Dentist list</h1>
-            </label>
+            <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2" for="time">
+                    <h1 class="font-bold text-3xl max-md:text-xl">Dentist list</h1>
+                </label>
+                <form method="GET" action="{{ route('dentist') }}" class="flex items-center gap-4">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search dentist..."
+                        class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all text-sm">
+                        Search
+                    </button>
+                </form>
+            </div>
             <form method="GET" action="{{ route('add.dentist') }}">
                 @csrf
                 <button onclick="openModal()"
-                    class="flex self-center justify-center  items-center gap-2 rounded-md py-2 px-4 min-w-max border-2 border-gray-600 hover:shadow-md hover:border-green-700 font-semibold text-gray-800 transition-all max-md:py-1 max-md:px-2 max-md:text-xs">
+                    class="flex self-center justify-center items-center gap-2 rounded-md py-2 px-4 min-w-max border-2 border-gray-600 hover:shadow-md hover:border-green-700 font-semibold text-gray-800 transition-all max-md:py-1 max-md:px-2 max-md:text-xs">
                     <span class=""> Add Dentist</span>
                     <img class="h-8 max-md:h-5" src="{{ asset('assets/images/add-patient.png') }}" alt="">
                 </button>
@@ -23,10 +34,42 @@
         <table class="w-full table-auto mb-2 overflow-hidden">
             <thead>
                 <tr class="bg-green-200 text-green-700">
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">ID</th>
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Name</th>
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Dentist Specialty</th>
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Branch</th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            ID
+                            @if(request('sort') === 'id')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'direction' => request('sort') === 'name' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Name
+                            @if(request('sort') === 'name')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'specialty', 'direction' => request('sort') === 'specialty' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Dentist Specialty
+                            @if(request('sort') === 'specialty')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'branch', 'direction' => request('sort') === 'branch' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Branch
+                            @if(request('sort') === 'branch')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
                     <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Actions</th>
                 </tr>
             </thead>

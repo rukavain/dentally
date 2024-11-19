@@ -29,23 +29,23 @@ class RoleMiddleware
 
         // Check if the authenticated user's role is one of the allowed roles
         if (!in_array(auth()->user()->role, $allowedRoles)) {
-            return abort(403);  // Forbidden (or 404 if you prefer)
+            return redirect()->back()->with('error', 'You do not have permission to access this page.');
         }
 
         return $next($request);
     }
 
 
-    
+
 
     // public function handle(Request $request, Closure $next, ...$roles)
     // {
     //     $rolesArray = explode(',', $roles); // Convert roles into an array
-    
+
     //     if (auth()->check() && in_array(auth()->user()->role, $rolesArray)) {
     //         return $next($request);
     //     }
-        
+
     //     return redirect('/')->with('error', 'Unauthorized Access');
     // }
 }

@@ -81,8 +81,8 @@
                     <label class="flex flex-col flex-1 pb-4" for="date">
                         <h1>Date</h1>
                         <input class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
-                            name="date" type="date" id="date" autocomplete="off" placeholder="Juan"
-                            value="{{ old('date') }}" oninput="validateInput('date')">
+                            name="date" type="date" id="date" autocomplete="off" min="{{ date('Y-m-d') }}"
+                            value="{{ old('date', $schedule->date) }}" oninput="validateInput('date')" required>
                         @error('date')
                             <span id="date_error"
                                 class="validation-message text-red-600 text-xs p-1 rounded-md my-1 show">{{ $message }}</span>
@@ -93,8 +93,8 @@
                         <label class="flex flex-col flex-1 pb-4" for="start_time">
                             <h1>Start Time</h1>
                             <input class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
-                                name="start_time" type="time" id="start_time" step="600"
-                                value="{{ old('start_time') }}" oninput="validateInput('start_time')">
+                                name="start_time" type="time" id="start_time" step="900" min="09:00" max="17:00"
+                                value="{{ old('start_time', $schedule->start_time) }}" oninput="validateInput('start_time')" required>
                             @error('start_time')
                                 <span id="start_time_error"
                                     class="validation-message text-red-600 text-xs p-1 rounded-md my-1 show">{{ $message }}</span>
@@ -103,8 +103,8 @@
                         <label class="flex flex-col flex-1 pb-4" for="end_time">
                             <h1>End Time</h1>
                             <input class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
-                                name="end_time" type="time" id="end_time" step="600" value="{{ old('end_time') }}"
-                                oninput="validateInput('end_time')">
+                                name="end_time" type="time" id="end_time" step="900" min="09:00" max="17:00"
+                                value="{{ old('end_time', $schedule->end_time) }}" oninput="validateInput('end_time')" required>
                             @error('end_time')
                                 <span id="end_time_error"
                                     class="validation-message text-red-600 text-xs p-1 rounded-md my-1 show">{{ $message }}</span>
@@ -136,15 +136,23 @@
     </section>
     <script>
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('appointment_date').setAttribute('min', today);
+        const dateInput = document.getElementById('date');
+        dateInput.setAttribute('min', today);
+
+        // Disable Sundays
+        dateInput.addEventListener('input', function(e) {
+            const selected = new Date(this.value);
+            if (selected.getDay() === 0) { // 0 = Sunday
+                alert('Scheduling is not available on Sundays');
+                this.value = '';
+            }
+        });
 
         function validateInput(field) {
             const input = document.getElementById(field);
             const errorElement = document.getElementById(`${field}_error`);
 
-            // Assuming that the presence of errorElement means the field has an error initially
             if (errorElement) {
-                // If the input is valid (e.g., not empty), hide the error message
                 if (input.value.trim() !== '') {
                     errorElement.classList.remove('show');
                     errorElement.classList.add('hide');
@@ -153,9 +161,24 @@
                         errorElement.style.display = 'none';
                     }, 500);
                 } else {
-                    // If the input is still invalid, keep the error message visible
                     errorElement.classList.remove('hide');
                     errorElement.classList.add('show');
+                }
+            }
+
+            // Additional time validation
+            if (field === 'end_time' || field === 'start_time') {
+                const startTime = document.getElementById('start_time').value;
+                const endTime = document.getElementById('end_time').value;
+
+                if (startTime && endTime && startTime >= endTime) {
+                    const errorMsg = document.getElementById(`${field}_error`);
+                    if (errorMsg) {
+                        errorMsg.textContent = 'End time must be after start time';
+                        errorMsg.classList.remove('hide');
+                        errorMsg.classList.add('show');
+                        errorMsg.style.display = 'block';
+                    }
                 }
             }
         }

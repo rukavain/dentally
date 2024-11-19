@@ -12,6 +12,68 @@ use Illuminate\Console\Scheduling\Schedule;
 
 class ScheduleController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = DentistSchedule::with(['dentist', 'branch']);
+
+        // Handle week selection
+        $selectedWeek = $request->get('selectedWeek');
+        if ($selectedWeek) {
+            $weekStart = Carbon::parse($selectedWeek);
+        } else {
+            $weekStart = now();
+        }
+
+        // Ensure we're at the start of the week
+        $weekStart = $weekStart->startOfWeek();
+        $weekEnd = $weekStart->copy()->endOfWeek();
+
+        // Apply sorting
+        switch ($request->get('sortSchedule', 'current_week')) {
+            case 'next_week':
+                $weekStart = $weekStart->addWeek();
+                $weekEnd = $weekEnd->addWeek();
+                break;
+            case 'dentist_asc':
+                $query->join('dentists', 'dentist_schedules.dentist_id', '=', 'dentists.id')
+                    ->orderBy('dentists.dentist_first_name', 'asc')
+                    ->orderBy('dentists.dentist_last_name', 'asc')
+                    ->orderBy('date', 'asc')
+                    ->orderBy('start_time', 'asc')
+                    ->select('dentist_schedules.*'); // Ensure we only get schedule fields
+                break;
+            case 'dentist_desc':
+                $query->join('dentists', 'dentist_schedules.dentist_id', '=', 'dentists.id')
+                    ->orderBy('dentists.dentist_first_name', 'desc')
+                    ->orderBy('dentists.dentist_last_name', 'desc')
+                    ->orderBy('date', 'asc')
+                    ->orderBy('start_time', 'asc')
+                    ->select('dentist_schedules.*'); // Ensure we only get schedule fields
+                break;
+            default: // current_week
+                $query->orderBy('date', 'asc')
+                    ->orderBy('start_time', 'asc');
+        }
+
+        // Filter by date range
+        $query->whereBetween('date', [
+            $weekStart->format('Y-m-d'),
+            $weekEnd->format('Y-m-d')
+        ]);
+
+        // Get the schedules with pagination
+        $schedules = $query->paginate(15)->withQueryString();
+
+        return view('content.schedule', [
+            'schedules' => $schedules,
+            'weekRange' => [
+                'start' => $weekStart->format('M d'),
+                'end' => $weekEnd->format('M d'),
+                'year' => $weekStart->format('Y')
+            ]
+        ]);
+    }
+
     public function addSchedule()
     {
         $dentists = Dentist::all();

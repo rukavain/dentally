@@ -44,13 +44,13 @@
                             <h1 class="font-semibold max-lg:text-sm">E-mail</h1>
                             <input
                                 class="w-full border text-black border-gray-400 py-2 px-4 max-lg:py-1 max-lg:text-sm max-lg:px-2 rounded-md"
-                                type="email" name="email" id="email" value="{{ old('email') }}">
+                                type="email" name="email" id="email" value="{{ old('email') }}" required>
                         </label>
                         <label for="password">
                             <h1 class="font-semibold max-lg:text-sm">Password</h1>
                             <input
                                 class="w-full border text-black border-gray-400 py-2 px-4 max-lg:py-1 max-lg:text-sm max-lg:px-2 rounded-md"
-                                type="password" name="password" id="password">
+                                type="password" name="password" id="password" required>
                         </label>
                         <a class="text-sm max-lg:text-xs hover:font-semibold transition-all"
                             href="{{ route('password.request') }}">Forgot your password?</a>

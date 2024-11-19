@@ -24,10 +24,33 @@
         <table class="w-full table-auto mb-2 overflow-hidden">
             <thead>
                 <tr class="bg-green-200 text-green-700">
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Procedure Code</th>
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Procedure Name</th>
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Price</th>
-                    {{-- <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Type of visit</th> --}}
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'code', 'direction' => request('sort') === 'code' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Procedure Code
+                            @if(request('sort') === 'code')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'direction' => request('sort') === 'name' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Procedure Name
+                            @if(request('sort') === 'name')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => request('sort') === 'price' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Price
+                            @if(request('sort') === 'price')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
                     <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Actions</th>
                 </tr>
             </thead>

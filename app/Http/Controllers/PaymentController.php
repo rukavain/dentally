@@ -144,7 +144,7 @@ class PaymentController extends Controller
                         ],
                         // 'success_url' => 'https://toothimpressionsdentalclinic.xyz/success',
                         // 'cancel_url' => 'https://toothimpressionsdentalclinic.xyz',
-                        // 'description' => 'text',
+                        // 'description' => $name,
                         'success_url' => 'http://127.0.0.1:8000/success',
                         'cancel_url' => 'http://127.0.0.1:8000/',
                         'description' => $name,

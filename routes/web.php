@@ -1,9 +1,12 @@
 <?php
 
+use App\Mail\TestMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\adminPanel\AdminController;
 use App\Http\Controllers\adminPanel\ImageController;
 use App\Http\Controllers\staffPanel\StaffController;
@@ -14,8 +17,13 @@ use App\Http\Controllers\dentistPanel\DentistController;
 use App\Http\Controllers\patientPanel\PatientController;
 use App\Http\Controllers\patientPanel\PaymentController;
 use App\Http\Controllers\PaymentController as ControllersPaymentController;
-use App\Mail\TestMail;
-use Illuminate\Support\Facades\Mail;
+
+
+// Notification Routes
+Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])
+    ->name('notifications.mark-as-read')
+    ->middleware(['auth']);
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,13 +60,6 @@ Route::get('/send-test-email', function () {
     return 'Email send successfully!';
 });
 
-// Route::get('/send-test-mail', function () {
-//     Mail::send(new TestMail());
-//     return 'Test email sent!';
-// });
-
-// Route::get('/send-mail', [EmailController::class, 'sendHelloEmail']);
-
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff,dentist']], function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
@@ -67,7 +68,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff,dentist']],
 //remove dentist here
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff']], function () {
     Route::get('/patient-list', [PatientController::class, 'patient_list'])->name('patient_list');
-    Route::get('/schedule', [AdminController::class, 'schedule'])->name('schedule');
+    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
     Route::get('/inventory', [InventoryController::class, 'inventory'])->name('inventory');
     Route::get('/procedure', [ProcedureController::class, 'procedure'])->name('procedure');
     Route::get('/branch', [AdminController::class, 'branch'])->name('branch');
@@ -114,8 +115,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff']], functio
     Route::get('/show-patient/{patient}/patient-contract', [PatientController::class, 'patientContract'])->name('patient.contract');
     Route::get('/show-patient/{patient}/patient-background', [PatientController::class, 'patientBackground'])->name('patient.background');
     Route::get('/show-patient/{patient}/patient-xray', [PatientController::class, 'patientXray'])->name('patient.xray');
-
-    //Testing Patient
+    Route::put('/patient/{id}/update-hmo', [PatientController::class, 'updateHmo'])->name('update.patient.hmo');
     Route::get('/active-patient-list', [PatientController::class, 'activePatient'])->name('patient.active');
     Route::get('/archived-patient-list', [PatientController::class, 'archivedPatient'])->name('patient.archived');
 
@@ -210,6 +210,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:client',]], function ()
     Route::post('/client/{paymentId}/store', [ClientController::class, 'storeClientPartialPayment'])->name('client.store');
     Route::get('/client/{paymentId}/history', [ClientController::class, 'showClientPaymentHistory'])->name('client.history');
 
+    Route::put('/client/{appointmentId}/cancel', [ClientController::class, 'cancelAppointment'])->name('client.cancel');
 
     Route::post('client/upload-proof', [ClientController::class, 'uploadProof'])->name('client.proof');
 

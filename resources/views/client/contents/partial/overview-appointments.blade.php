@@ -33,13 +33,19 @@
 
 
                 <td class="border-b px-4 py-2 min-w-max h-full max-lg:text-xs max-xl:hidden">
-                    @if ($appointment->pending === 'Approved')
-                        <h1 class="text-md text-green-600 font-semibold">Approved</h1>
-                    @elseif ($appointment->pending === 'Declined')
-                        <h1 class="text-md text-red-600 font-semibold">Declined</h1>
+                    @if ($appointment->status === 'Cancelled')
+                    <h1 class="text-md text-red-600 font-semibold">Cancelled</h1>
+
                     @else
-                        <h1 class="text-md text-slate-600 font-semibold">Pending</h1>
+                        @if ($appointment->pending === 'Approved')
+                            <h1 class="text-md text-green-600 font-semibold">Approved</h1>
+                        @elseif ($appointment->pending === 'Declined')
+                            <h1 class="text-md text-red-600 font-semibold">Declined</h1>
+                        @else
+                            <h1 class="text-md text-slate-600 font-semibold">Pending</h1>
+                        @endif
                     @endif
+
                 </td>
                 <td class="py-2 px-4 max-xl:flex justify-center items-center text-xs">
                     <button class="text-gray-800 border-2 rounded-md px-4 py-2  transition"
@@ -103,7 +109,24 @@
                             </div>
 
                             <!-- Modal footer -->
-                            <div class="px-4 py-2 border-t border-t-gray-500 flex justify-end items-center space-x-4">
+                            <div class="px-4 py-2 border-t border-t-gray-500 flex justify-between items-center space-x-4">
+                                @if ($appointment->status === 'Cancelled')
+                                <form action="{{ route('client.cancel', $appointment->id) }}" method="post"
+                                    >
+                                    @csrf
+                                    @method('PUT')
+                                    <button class=" bg-gray-600 text-white px-4 py-2 rounded-md transition"
+                                        type="submit" disabled>Cancelled appointment</button>
+                                </form>
+                                @else
+                                    <form action="{{ route('client.cancel', $appointment->id) }}" method="post"
+                                        >
+                                        @csrf
+                                        @method('PUT')
+                                        <button class=" bg-red-600 text-white px-4 py-2 rounded-md transition"
+                                            type="submit">Cancel appointment</button>
+                                    </form>
+                                @endif
                                 <button class="border text-gray-600 px-4 py-2 rounded-md transition"
                                     onclick="closeModal('view_modal_{{ $appointment->id }}')">Close </button>
                             </div>

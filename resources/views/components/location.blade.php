@@ -34,7 +34,7 @@
             <div class="flex flex-col gap-4 ">
                 <div class="flex justify-start items-center gap-4">
                     <img class="h-8 max-lg:h-5" src="{{ asset('assets/images/calendar.png') }}" alt="">
-                    <h1 class=" max-lg:text-sm">Monday - Sunday: 9:00 AM - 5:00 PM</h1>
+                    <h1 class=" max-lg:text-sm">Monday - Saturday: 9:00 AM - 5:00 PM</h1>
                 </div>
                 <div class="flex justify-start items-center gap-4">
                     <img class="h-8 max-lg:h-5" src="{{ asset('assets/images/telephone.png') }}" alt="">

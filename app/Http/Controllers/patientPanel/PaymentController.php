@@ -107,7 +107,7 @@ class PaymentController extends Controller
                 'amount_due' => $appointment->procedure->price,
                 'total_paid' => $request->paid_amount,
                 'balance_remaining' => $balanceRemaining - $request->paid_amount,
-                'status' => 'pending', // Initial status for new payment
+                'status' => ($request->paid_amount >= $appointment->procedure->price) ? 'Paid' : 'Pending',
             ]);
         }
 

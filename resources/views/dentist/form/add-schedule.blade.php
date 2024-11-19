@@ -115,7 +115,7 @@
                         <label class="flex flex-col flex-1" for="start_time">
                             <h1>Start Time</h1>
                             <input class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
-                                name="start_time" type="time" id="start_time" step="600">
+                                name="start_time" type="time" id="start_time" step="900" min="09:00" max="17:00">
                             @error('start_time')
                                 <span id="start_time_error"
                                     class="validation-message text-red-600 text-xs p-1 rounded-md my-1 show">{{ $message }}</span>
@@ -124,7 +124,7 @@
                         <label class="flex flex-col flex-1" for="end_time">
                             <h1>End Time</h1>
                             <input class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
-                                name="end_time" type="time" id="end_time" step="1800">
+                                name="end_time" type="time" id="end_time" step="900" min="09:00" max="17:00">
                             @error('end_time')
                                 <span id="end_time_error"
                                     class="validation-message text-red-600 text-xs p-1 rounded-md my-1 show">{{ $message }}</span>
@@ -132,17 +132,8 @@
                         </label>
                     </div>
                     <input type="hidden" id="appointment_duration" name="appointment_duration" value="60">
-                    {{-- <label class="flex flex-col flex-1" for="appointment_duration">
-                        <h1>Appointment Duration</h1>
-                        <select class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
-                            id="appointment_duration" name="appointment_duration" required>
-                            <option value="15"> 15 Minutes</option>
-                            <option value="30"> 30 Minutes</option>
-                            <option value="45"> 45 Minutes</option>
-                            <option value="60"> 60 Minutes</option>
-                        </select> --}}
                 </div>
-                <div class="w-full flex gap-2 mb-3 border">
+                <div class="w-full flex gap-2 mb-3">
 
                     <button
                         class="flex-1 justify-center items-center py-2 px-8 text-center max-md:py-2 max-md:px-2 max-md:text-xs font-semibold rounded-md hover:bg-green-600 hover:border-green-600 hover:text-white text-gray-800 border-2 border-gray-600 transition-all"
@@ -165,7 +156,18 @@
     </section>
     <script>
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('date').setAttribute('min', today);
+        const dateInput = document.getElementById('date');
+        dateInput.setAttribute('min', today);
+
+        // Disable Sundays
+        dateInput.addEventListener('input', function(e) {
+            const selected = new Date(this.value);
+            if (selected.getDay() === 0) { // 0 = Sunday
+                alert('Scheduling is not available on Sundays');
+                this.value = '';
+            }
+        });
+
 
         function validateInput(field) {
             const input = document.getElementById(field);

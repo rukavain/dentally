@@ -7,16 +7,65 @@ use App\Models\AuditLog;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
 
 class InventoryController extends Controller
 {
 
-    public function inventory()
+    public function inventory(Request $request)
     {
-        $items = Inventory::all();
+        // Get analytics data
+        $totalItems = Inventory::count();
+        $totalValue = Inventory::sum(DB::raw('quantity * cost_per_item'));
+        $outOfStockCount = Inventory::where('availability', 'out-of-stock')->count();
 
-        return view('admin.inventory.inventory', compact('items'));
+        // Get low stock items
+        $lowStockItems = Inventory::whereRaw('quantity <= minimum_quantity')
+            ->where('quantity', '>', 0)
+            ->get();
+        $lowStockCount = $lowStockItems->count();
+
+        // Main inventory query
+        $query = Inventory::query();
+
+        // Apply search if present
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('item_name', 'like', "%{$search}%")
+                  ->orWhere('serial_number', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply availability filter
+        if ($availability = $request->input('availability')) {
+            $query->where('availability', $availability);
+        }
+
+        // Apply sorting
+        $sortField = $request->input('sort', 'item_name');
+        $sortDirection = $request->input('direction', 'asc');
+
+        // Validate sort field to prevent SQL injection
+        $allowedSortFields = ['item_name', 'serial_number', 'quantity', 'availability'];
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        $items = $query->paginate(10)->withQueryString();
+
+        return view('admin.inventory.inventory', compact(
+            'items',
+            'sortField',
+            'sortDirection',
+            'totalItems',
+            'totalValue',
+            'outOfStockCount',
+            'lowStockItems',
+            'lowStockCount'
+        ));
     }
+
 
     public function addItem()
     {
@@ -34,8 +83,8 @@ class InventoryController extends Controller
             'cost_per_item' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
-        
-        $minimumQuantity = $validatedData['quantity'] * 0.30; 
+
+        $minimumQuantity = $validatedData['quantity'] * 0.30;
         $availability = $this->determineAvailability($validatedData['quantity'], $minimumQuantity);
         $totalValue = $validatedData['quantity'] * $validatedData['cost_per_item'];
 
@@ -96,7 +145,7 @@ class InventoryController extends Controller
         ]);
 
 
-        $minimumQuantity = $item->minimum_quantity; 
+        $minimumQuantity = $item->minimum_quantity;
         $availability = $this->determineAvailability($validatedData['quantity'], $minimumQuantity);
         $totalValue = $validatedData['quantity'] * $validatedData['cost_per_item'];
 
