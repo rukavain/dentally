@@ -36,6 +36,7 @@ class DentistController extends Controller
 
         $approvedAppointments = Appointment::where('dentist_id', $dentistId)
         ->where('pending', 'approved')
+        ->where('status', '!=','Cancelled')
         ->count();
     $declinedAppointments = Appointment::where('dentist_id', $dentistId)
         ->where('pending', 'declined')
@@ -52,6 +53,7 @@ class DentistController extends Controller
         ->count();
     $pendingAppointments = Appointment::where('dentist_id', $id)
         ->where('pending', 'Pending')
+        ->where('status', '!=','Cancelled')
         ->where('is_archived', 0)
         ->with(['patient', 'procedure', 'branch'])
         ->paginate(5, ['*'], 'pending_page');

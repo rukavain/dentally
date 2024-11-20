@@ -109,26 +109,34 @@
                             </div>
 
                             <!-- Modal footer -->
-                            <div class="px-4 py-2 border-t border-t-gray-500 flex justify-between items-center space-x-4">
+                            <div class="w-full px-4 py-2 border-t border-t-gray-500 flex justify-between items-center space-x-4">
                                 @if ($appointment->status === 'Cancelled')
-                                <form action="{{ route('client.cancel', $appointment->id) }}" method="post"
-                                    >
+                                <form action="{{ route('client.cancel', $appointment->id) }}" method="post" class="w-full">
                                     @csrf
                                     @method('PUT')
-                                    <button class=" bg-gray-600 text-white px-4 py-2 rounded-md transition"
+                                    <button class="w-full bg-gray-600 text-white px-4 py-2 rounded-md transition"
                                         type="submit" disabled>Cancelled appointment</button>
                                 </form>
-                                @else
-                                    <form action="{{ route('client.cancel', $appointment->id) }}" method="post"
+                                @elseif($appointment->pending === 'Declined')
+                                    <form action="{{ route('client.cancel', $appointment->id) }}" method="post" class="w-full"
                                         >
                                         @csrf
                                         @method('PUT')
-                                        <button class=" bg-red-600 text-white px-4 py-2 rounded-md transition"
+                                        <button class="w-full bg-gray-600 text-white px-4 py-2 rounded-md transition"
+                                            type="submit" disabled>Declined appointment</button>
+                                    </form>
+                                @elseif($appointment->payment)
+                                        <a href="{{ route('client.form', $appointment->id) }}" class="w-full bg-green-600 text-white px-4 py-2 rounded-md transition"
+                                            type="submit">Add payment</a>
+                                @else
+                                    <form action="{{ route('client.cancel', $appointment->id) }}" method="post" class="w-full"
+                                        >
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="w-full bg-red-600 text-white px-4 py-2 rounded-md transition"
                                             type="submit">Cancel appointment</button>
                                     </form>
                                 @endif
-                                <button class="border text-gray-600 px-4 py-2 rounded-md transition"
-                                    onclick="closeModal('view_modal_{{ $appointment->id }}')">Close </button>
                             </div>
                         </div>
                     </div>

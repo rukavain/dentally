@@ -14,6 +14,8 @@ use App\Models\PaymentHistory;
 use App\Models\TemporaryPayment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\ClientPendingPayment;
+use App\Notifications\ClientCancelledAppointment;
 
 class ClientController extends Controller
 {
@@ -131,6 +133,12 @@ class ClientController extends Controller
             'status' => 'pending',
         ]);
 
+        // Send notification to admin and staff users
+        $users = User::whereIn('role', ['admin', 'staff'])->get();
+        foreach ($users as $user) {
+            $user->notify(new ClientPendingPayment($appointment));
+        }
+
         return response()->json(['success' => true, 'message' => 'Payment submitted for review.']);
     }
 
@@ -156,11 +164,16 @@ class ClientController extends Controller
     }
 
     public function cancelAppointment($appointmentId){
-        $appointment = Appointment::with(['patient', 'procedure'])->find($appointmentId);
+        $appointment = Appointment::with(['patient', 'procedure', 'dentist'])->find($appointmentId);
 
         $appointment->status = 'Cancelled';
 
         $appointment->save();
+
+        $users = User::whereIn('role', ['admin', 'staff', 'dentist'])->get();
+        foreach($users as $user) {
+            $user->notify(new ClientCancelledAppointment($appointment));
+        }
 
         return redirect()->route('client.overview', $appointment->patient_id)->with('success', 'Appointment cancelled');
     }

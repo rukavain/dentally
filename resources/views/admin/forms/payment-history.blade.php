@@ -85,6 +85,11 @@
                     type="reset">
                     Return
                 </a>
+                <a href="{{ route('payments.pending', $appointment->id) }}"
+                    class="flex w-full justify-center items-center py-2 px-16 text-center max-md:py-2 max-md:px-12 max-md:text-xs font-semibold rounded-md hover:bg-gray-600 hover:border-gray-600 border-2 border-gray-600 text-gray-800  hover:text-white transition-all"
+                    type="reset">
+                    Return
+                </a>
             </div>
         </div>
     </section>

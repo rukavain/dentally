@@ -47,7 +47,7 @@ class AppointmentApproved extends Notification
             ->line('Date: ' . $formattedDate)
             ->line('Time: ' . $appointment->preferred_time)
             ->line('Procedure: ' . $procedureName)
-            ->line('Dentist: ' . $dentistName)
+            ->line('Dentist: ' . $appointment->dentist->dentist_first_name . ' ' . $appointment->dentist->dentist_last_name)
             ->line('Branch: ' . $appointment->branch->branch_loc)
             ->line('Important Reminders:')
             ->line('1. Please arrive 10-15 minutes before your scheduled appointment')

@@ -214,7 +214,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:client',]], function ()
 
     Route::post('client/upload-proof', [ClientController::class, 'uploadProof'])->name('client.proof');
 
-    Route::post('/client/{appointmentId}/pay', [ControllersPaymentController::class, 'testPay'])->name('client.pay');
+    Route::post('/client/{appointmentId}/pay', [ControllersPaymentController::class, 'pay'])->name('client.pay');
     Route::get('success', [ControllersPaymentController::class, 'success']);
 
     // Route::get('/appointment/request', [AppointmentController::class, 'create'])->name('appointments.request');
