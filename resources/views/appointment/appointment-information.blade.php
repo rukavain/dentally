@@ -8,7 +8,15 @@
     </div>
     <section class="flex flex-col justify-center items-center bg-white border">
         <section class="p-6  flex flex-1 justify-center items-center max-xl:mt-12">
-            @if ($appointment->pending === 'Approved')
+            @if($appointment->status === 'Cancelled')
+                <div class="flex flex-col  justify-center items-center gap-3">
+                    <img class="h-10" src="{{ asset('assets/images/decline-icon.png') }}" alt="">
+                    <h1 class="font-bold text-xl text-blue-600 max-xl:text-md"> Appointment Cancelled!</h1>
+                    <h1 class="text-sm text-blue-600 max-xl:text-center">This appointment for
+                        {{ $appointment->patient->last_name }}
+                        {{ $appointment->patient->first_name }} has been cancelled</h1>
+                </div>
+            @elseif ($appointment->pending === 'Approved')
                 <div class="flex flex-col justify-center items-center gap-3">
                     <img class="h-10" src="{{ asset('assets/images/check-icon.png') }}" alt="">
                     <h1 class="font-bold text-xl text-green-600 max-xl:text-md">Appointment Approved!</h1>
@@ -29,6 +37,7 @@
                         {{ $appointment->dentist->dentist_last_name }}
                         {{ $appointment->dentist->dentist_first_name }}</h1>
                 </div>
+
             @else
                 <div class="flex flex-col  justify-center items-center gap-3">
                     <img class="h-10" src="{{ asset('assets/images/pending.png') }}" alt="">

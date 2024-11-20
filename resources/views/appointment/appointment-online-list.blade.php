@@ -123,14 +123,12 @@
                             @endif
                         </td>
                         <td class="p-1 justify-center items-center max-lg:text-xs">
-                            @if ($appointment->status !== 'Cancelled')
                                 <a href="{{ route('show.appointment', $appointment->id) }}"
                                     class="flex justify-center items-center border rounded-md py-2 px-4 max-md:py-1 max-md:px-2 text-white font-semibold hover:bg-gray-400 transition-all">
                                     <h1 class="hidden max-2xl:block text-xs font-semibold text-gray-800">View</h1>
                                     <img class="h-5 sm:h-4 sm:w-4 max-md:h-4 max-md:w-4 max-2xl:hidden"
                                         src="{{ asset('assets/images/user-icon.png') }}" alt="">
                                 </a>
-                            @endif
                         </td>
                     </tr>
                 @endforeach

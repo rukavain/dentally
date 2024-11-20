@@ -27,7 +27,7 @@ class ClientController extends Controller
         } elseif(Auth::user()->role === 'dentist') {
             return redirect()->route('dentist.dashboard');
         } else {
-        return view('client.dashboard');
+            return redirect()->route('client.overview', Auth::user()->patient_id);
         }
     }
 
@@ -41,15 +41,16 @@ class ClientController extends Controller
         $appointments = Appointment::where('patient_id', $id)
                                     // ->where('status', '!=', 'cancelled')
                                     ->with('procedure')
-                                    ->paginate(5);
+                                    ->paginate(7);
 
         $appointmentIds = $appointments->pluck('id');
 
         // Fetch payments related to the patient's appointments
         $payments = Appointment::where('patient_id', $id)
                 ->where('pending', 'Approved')
+                ->where('status', '!=' , 'Cancelled')
                 ->with(['procedure', 'dentist', 'payment'])
-                ->paginate(5);
+                ->paginate(7);
         // Pass the patient data to the profile view
         return view('client.contents.overview', compact('patient', 'appointments', 'payments'));
     }
@@ -167,10 +168,11 @@ class ClientController extends Controller
         $appointment = Appointment::with(['patient', 'procedure', 'dentist'])->find($appointmentId);
 
         $appointment->status = 'Cancelled';
+        $appointment->pending = 'Declined';
 
         $appointment->save();
 
-        $users = User::whereIn('role', ['admin', 'staff', 'dentist'])->get();
+        $users = User::whereIn('role', ['admin', 'staff'])->get();
         foreach($users as $user) {
             $user->notify(new ClientCancelledAppointment($appointment));
         }
