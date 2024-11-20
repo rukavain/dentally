@@ -126,7 +126,7 @@
                                             type="submit" disabled>Declined appointment</button>
                                     </form>
                                 @elseif($appointment->payment)
-                                        <a href="{{ route('client.form', $appointment->id) }}" class="w-full bg-green-600 text-white px-4 py-2 rounded-md transition"
+                                        <a href="{{ route('client.form', $appointment->id) }}" class="w-full bg-green-600 text-white text-center px-4 py-2 rounded-md transition"
                                             type="submit">Add payment</a>
                                 @else
                                     <form action="{{ route('client.cancel', $appointment->id) }}" method="post" class="w-full"

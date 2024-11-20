@@ -40,6 +40,7 @@ class DentistController extends Controller
         ->count();
     $declinedAppointments = Appointment::where('dentist_id', $dentistId)
         ->where('pending', 'declined')
+        ->where('status', '!=','Cancelled')
         ->count();
     $todaysSchedules = DentistSchedule::where('dentist_id', $dentistId)
         ->where('date', $today)
@@ -49,6 +50,7 @@ class DentistController extends Controller
         ->get();
     $pendingAppointmentsDashboard = Appointment::where('dentist_id', $dentistId)
         ->where('pending', 'pending')
+        ->where('status', '!=','Cancelled')
         ->with(['patient', 'procedure', 'branch'])
         ->count();
     $pendingAppointments = Appointment::where('dentist_id', $id)
