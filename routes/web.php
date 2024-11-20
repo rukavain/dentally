@@ -1,6 +1,7 @@
 <?php
 
 use App\Mail\TestMail;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -64,6 +65,9 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff,dentist']],
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+if(App::environment('local')){
+    Route::get('email/preview/approved', [AppointmentController::class, 'previewEmailApproved']);
+}
 
 //remove dentist here
 Route::group(['middleware' => ['auth', 'verified', 'role:admin,staff']], function () {

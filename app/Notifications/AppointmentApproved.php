@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 class AppointmentApproved extends Notification
 {
     use Queueable;
-
+    protected $appointment;
     /**
      * Create a new notification instance.
      */

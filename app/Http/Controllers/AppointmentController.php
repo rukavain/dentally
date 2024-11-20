@@ -451,4 +451,12 @@ class AppointmentController extends Controller
         $online_appointments = $query->paginate(10)->appends($request->except('page'));
         return view('appointment.appointment-online-list', compact('online_appointments'));
     }
+
+    public function previewEmailApproved() {
+        $appointment = Appointment::with(['patient', 'procedure', 'dentist', 'branch'])->first();
+
+        $notification = new AppointmentApproved($appointment);
+
+        return $notification->toMail($appointment->patient)->render();
+    }
 }
