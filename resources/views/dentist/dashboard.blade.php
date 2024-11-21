@@ -72,6 +72,8 @@
                 @include('components.search')
             </div>
             @yield('content')
+            <x-sdg-footer />
+
         </div>
     </section>
 

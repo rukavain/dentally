@@ -27,6 +27,7 @@
             </div>
             @yield('content')
         </div>
+        <x-sdg-footer />
     </section>
 </body>
 <script>

@@ -38,22 +38,22 @@
                 </label>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 p-2" id="chartsContainer">
+            <div class="grid auto-rows-fr gap-2 p-2" id="chartsContainer">
                 <div id="dailyChartDiv" class="chart-div bg-white rounded shadow p-1">
                     <h2 class="text-[10px] font-semibold">Daily Revenue</h2>
-                    <div class="w-full h-24"><canvas id="dailyRevenueChart"></canvas></div>
+                    <div class="w-full h-40"><canvas id="dailyRevenueChart"></canvas></div>
                 </div>
                 <div id="weeklyChartDiv" class="chart-div bg-white rounded shadow p-1">
                     <h2 class="text-[10px] font-semibold">Weekly Revenue</h2>
-                    <div class="w-full h-24"><canvas id="weeklyRevenueChart"></canvas></div>
+                    <div class="w-full h-40"><canvas id="weeklyRevenueChart"></canvas></div>
                 </div>
                 <div id="monthlyChartDiv" class="chart-div bg-white rounded shadow p-1">
                     <h2 class="text-[10px] font-semibold">Monthly Revenue</h2>
-                    <div class="w-full h-24"><canvas id="monthlyRevenueChart"></canvas></div>
+                    <div class="w-full h-40"><canvas id="monthlyRevenueChart"></canvas></div>
                 </div>
                 <div id="totalChartDiv" class="chart-div bg-white rounded shadow p-1">
                     <h2 class="text-[10px] font-semibold">Revenue by Branch</h2>
-                    <div class="w-full h-24"><canvas id="totalRevenueChart"></canvas></div>
+                    <div class="w-full h-40"><canvas id="totalRevenueChart"></canvas></div>
                 </div>
             </div>
         </div>
@@ -131,6 +131,61 @@
     </section>
 
     <script>
+        function updateChartLayout() {
+            const container = document.getElementById('chartsContainer');
+            const visibleCharts = document.querySelectorAll('.chart-div:not(.hidden)');
+            const count = visibleCharts.length;
+
+            // Reset all chart sizes
+            visibleCharts.forEach(chart => {
+                chart.className = 'chart-div bg-white rounded shadow p-1';
+                chart.style.gridColumn = '';
+            });
+
+            // Update container grid based on visible charts
+            if (count === 1) {
+                container.className = 'grid grid-cols-1 gap-2 p-2';
+                visibleCharts[0].querySelector('div').className = 'w-full h-40';
+            } else if (count === 2) {
+                container.className = 'grid grid-cols-2 gap-2 p-2';
+                visibleCharts.forEach(chart => {
+                    chart.querySelector('div').className = 'w-full h-32';
+                });
+            } else if (count === 3) {
+                container.className = 'grid grid-cols-3 gap-2 p-2';
+                visibleCharts.forEach(chart => {
+                    chart.querySelector('div').className = 'w-full h-24';
+                });
+            } else {
+                container.className = 'grid grid-cols-2 gap-2 p-2';
+                visibleCharts.forEach(chart => {
+                    chart.querySelector('div').className = 'w-full h-24';
+                });
+            }
+
+            // Trigger chart resize
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        // Add event listeners to checkboxes
+        const toggles = {
+            'dailyChartToggle': 'dailyChartDiv',
+            'weeklyChartToggle': 'weeklyChartDiv',
+            'monthlyChartToggle': 'monthlyChartDiv',
+            'totalChartToggle': 'totalChartDiv'
+        };
+
+        Object.entries(toggles).forEach(([toggleId, chartId]) => {
+            document.getElementById(toggleId).addEventListener('change', function() {
+                const chartDiv = document.getElementById(chartId);
+                this.checked ? chartDiv.classList.remove('hidden') : chartDiv.classList.add('hidden');
+                updateChartLayout();
+            });
+        });
+
+        // Initial layout update
+        updateChartLayout();
+
         document.addEventListener('DOMContentLoaded', function() {
             const chartOptions = {
                 responsive: true,
