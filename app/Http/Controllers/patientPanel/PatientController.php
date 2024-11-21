@@ -219,7 +219,7 @@ class PatientController extends Controller
             'gender' => 'required',
             'date_of_birth' => 'required|date',
             'fb_name' => 'required|string|max:255',
-            'phone_number' => 'nullable|string|max:12|unique:patients,phone_number',
+            'phone_number' => 'nullable|string|max:12|unique:patients,phone_number,'.$id.',id',
             'next_visit' => 'required|date',
             'branch_id' => 'required|exists:branches,id',
         ]);
