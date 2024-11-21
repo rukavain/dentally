@@ -79,14 +79,14 @@
                 </tbody>
             </table>
 
-            <div class="w-full flex gap-2 mt-4">
+            <div class="w-full flex flex-col gap-2 mt-4">
+                <a href="{{ route('payments.pending', $appointment->patient_id) }}"
+                    class="flex w-full justify-center items-center py-2 px-16 text-center max-md:py-2 max-md:px-12 max-md:text-xs font-semibold rounded-md hover:bg-gray-600 hover:border-gray-600 border-2 border-gray-600 text-gray-800  hover:text-white transition-all"
+                    >
+                    Pending Payment
+                </a>
                 <a @if (Auth::user()->role === 'admin') href="{{ route('show.appointment', $appointment->id) }}" @else href="{{ route('show.appointment', $appointment->id) }}" @endif
                     class="flex w-full justify-center items-center py-2 px-16 text-center max-md:py-2 max-md:px-12 max-md:text-xs font-semibold rounded-md hover:bg-red-600 hover:border-red-600 border-2 border-gray-600 text-gray-800  hover:text-white transition-all"
-                    type="reset">
-                    Return
-                </a>
-                <a href="{{ route('payments.pending', $appointment->id) }}"
-                    class="flex w-full justify-center items-center py-2 px-16 text-center max-md:py-2 max-md:px-12 max-md:text-xs font-semibold rounded-md hover:bg-gray-600 hover:border-gray-600 border-2 border-gray-600 text-gray-800  hover:text-white transition-all"
                     type="reset">
                     Return
                 </a>

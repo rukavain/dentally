@@ -37,11 +37,8 @@ class PaymentController extends Controller
                         'payment_method_types' => [
                             'card',
                         ],
-                        // 'success_url' => 'https://toothimpressionsdentalclinic.xyz/success',
-                        // 'cancel_url' => 'https://toothimpressionsdentalclinic.xyz',
-                        // 'description' => $name,
-                        'success_url' => 'http://127.0.0.1:8000/success',
-                        'cancel_url' => 'http://127.0.0.1:8000/',
+                        'success_url' => 'https://toothimpressionsdentalclinic.xyz/success',
+                        'cancel_url' => 'https://toothimpressionsdentalclinic.xyz',
                         'description' => $name,
                     ]
                 ]

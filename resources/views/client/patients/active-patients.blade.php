@@ -19,22 +19,33 @@
                     </button>
                 </form>
             </label>
-            <form method="GET" class="flex flex-wrap justify-start items-start gap-2 my-2"
-                action="{{ route('patient.active') }}">
-                <input class="max-md:text-sm max-md:py-1 max-md:px-2 border border-gray-400 py-2 px-4 rounded-md"
-                    type="text" name="search" placeholder="Patient name">
-                <select
-                    class="max-w-[50%] max-md:text-sm max-md:py-1 max-md:px-2 border border-gray-400 py-2 px-4 rounded-md"
-                    name="sort">
-                    <option value="next_visit" {{ $sort == 'next_visit' ? 'selected' : '' }}>Next Visit</option>
-                    <option value="id" {{ $sort == 'id' ? 'selected' : '' }}>ID</option>
-                    <option value="name" {{ $sort == 'name' ? 'selected' : '' }}>Name</option>
-                    <option value="date_added" {{ $sort == 'date_added' ? 'selected' : '' }}>Date Added</option>
-                </select>
+            <form method="GET" class="flex flex-wrap items-center gap-4 my-4" action="{{ route('patient.active') }}">
+                <div class="flex items-center gap-4 flex-1">
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search patients..."
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
 
-                <button
-                    class="rounded-md py-2 px-4 min-w-max text-white bg-green-600 hover:shadow-md hover:bg-white hover:text-gray-700 hover:border border-green-600 transition-all max-md:px-2"
-                    type="submit">Filter</button>
+                    <!-- Sort Options -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-medium text-gray-600" for="sort">Sort by:</label>
+                        <select id="sort" name="sort"
+                            class="rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                            <option value="next_visit" {{ request('sort') == 'next_visit' ? 'selected' : '' }}>Next Visit</option>
+                            <option value="id" {{ request('sort') == 'id' ? 'selected' : '' }}>ID</option>
+                            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
+                            <option value="date_added" {{ request('sort') == 'date_added' ? 'selected' : '' }}>Date Added</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
+
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all text-sm">
+                        Apply Filters
+                    </button>
+                </div>
             </form>
 
         </div>
@@ -43,9 +54,33 @@
         <table class="w-full table-auto mt-2 overflow-hidden">
             <thead>
                 <tr class="bg-green-200 text-green-700">
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">ID</th>
-                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Name</th>
-                    <th class="border px-4 py-2 max-lg:hidden">Date of next visit</th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            ID
+                            @if(request('sort') === 'id')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'direction' => request('sort') === 'name' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Name
+                            @if(request('sort') === 'name')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2 max-lg:hidden">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'next_visit', 'direction' => request('sort') === 'next_visit' && request('direction') === 'asc' ? 'desc' : 'asc']) }}"
+                            class="flex items-center justify-center gap-1">
+                            Date of next visit
+                            @if(request('sort') === 'next_visit')
+                                <span class="text-xs">{{ request('direction') === 'asc' ? '↑' : '↓' }}</span>
+                            @endif
+                        </a>
+                    </th>
                     <th class="border px-4 py-2 max-lg:hidden">Contacts</th>
                     <th class="border px-4 py-2 max-md:py-1 max-md:px-2 max-md:text-xs">Actions</th>
                 </tr>

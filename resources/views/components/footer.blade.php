@@ -79,7 +79,11 @@
         <section class="flex justify-evenly max-md:flex-col max-md:items-center items-end w-full gap-4">
 
             <div class="flex flex-col max-md:text-sm text-center justify-center items-center gap-4">
+                <div class="flex justify-center gap-4">
+                <img class="h-12" src="{{ asset('assets/images/mcc-logo.png') }}" alt="">
                 <img class="h-12" src="{{ asset('assets/images/logo.png') }}" alt="">
+                <img class="h-12" src="{{ asset('assets/images/ibce-logo.png') }}" alt="">
+            </div>
                 <h1>&copy;Tooth Impressions Dental Clinic</h1>
             </div>
 

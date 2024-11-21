@@ -268,16 +268,17 @@
                     </label>
 
                     <label class="flex flex-col flex-1 pb-4" for="proc_id">
-                        <h1>Select Procedure</h1>
-                        <select id="proc_id" name="proc_id"
-                            class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md" required>
-                            <option value="">Select Procedure</option>
+                        <h1>Select Procedure(s)</h1>
+                        <select id="proc_id" name="proc_id[]" multiple
+                            class="border max-md:text-xs flex-grow min-w-max border-gray-400 py-2 px-4 rounded-md"
+                            required style="min-height: 120px;">
                             @foreach ($procedures as $procedure)
-                                <option class="max-md:text-xs" value="{{ $procedure->id }}">{{ $procedure->name }} -
-                                    &#8369;{{ number_format($procedure->price, 2) }}
+                                <option class="max-md:text-xs" value="{{ $procedure->id }}">
+                                    {{ $procedure->name }} - &#8369;{{ number_format($procedure->price, 2) }}
                                 </option>
                             @endforeach
                         </select>
+                        <small class="text-gray-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple procedures</small>
                     </label>
 
                     <div class="form-group">
