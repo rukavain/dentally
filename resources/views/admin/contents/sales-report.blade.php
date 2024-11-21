@@ -145,21 +145,21 @@
             // Update container grid based on visible charts
             if (count === 1) {
                 container.className = 'grid grid-cols-1 gap-2 p-2';
-                visibleCharts[0].querySelector('div').className = 'w-full h-40';
+                visibleCharts[0].querySelector('div').className = 'w-full h-60';
             } else if (count === 2) {
                 container.className = 'grid grid-cols-2 gap-2 p-2';
                 visibleCharts.forEach(chart => {
-                    chart.querySelector('div').className = 'w-full h-32';
+                    chart.querySelector('div').className = 'w-full h-52';
                 });
             } else if (count === 3) {
                 container.className = 'grid grid-cols-3 gap-2 p-2';
                 visibleCharts.forEach(chart => {
-                    chart.querySelector('div').className = 'w-full h-24';
+                    chart.querySelector('div').className = 'w-full h-40';
                 });
             } else {
                 container.className = 'grid grid-cols-2 gap-2 p-2';
                 visibleCharts.forEach(chart => {
-                    chart.querySelector('div').className = 'w-full h-24';
+                    chart.querySelector('div').className = 'w-full h-40';
                 });
             }
 

@@ -211,7 +211,7 @@
                             <dialog id="my_modal_2"
                                 class="modal border-2 shadow-lg border-gray-400 p-8 rounded-md max-md:text-lg">
                                 <div class="modal-box flex flex-col">
-                                    <h3 class="text-2xl font-bold max-md:text-sm">Log out search</h3>
+                                    <h3 class="text-2xl font-bold max-md:text-sm">Log out</h3>
                                     <p class="py-4 max-md:text-sm">Are you sure you want to log out?</p>
                                     <div class="modal-action flex gap-2 self-end">
                                         <form method="dialog" class="border rounded-md w-max py-2 px-4">

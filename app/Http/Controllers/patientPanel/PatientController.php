@@ -142,7 +142,7 @@ class PatientController extends Controller
             'date_of_birth' => 'required|date',
             'email' => 'required|string|email|max:255|unique:patients,email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'phone_number' => 'nullable|string|max:12',
+            'phone_number' => 'nullable|string|max:12|unique:patients,phone_number',
             'fb_name' => 'required|string|max:255',
             'branch_id' => 'required|exists:branches,id',
             'hmo_company' => 'nullable|string|max:255',
@@ -219,7 +219,7 @@ class PatientController extends Controller
             'gender' => 'required',
             'date_of_birth' => 'required|date',
             'fb_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
+            'phone_number' => 'nullable|string|max:12|unique:patients,phone_number',
             'next_visit' => 'required|date',
             'branch_id' => 'required|exists:branches,id',
         ]);

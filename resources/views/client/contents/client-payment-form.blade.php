@@ -138,8 +138,6 @@
                         {{ number_format($appointment->procedure->price, 2) }}</h2>
                     <h2 class="max-md:text-xs font-semibold mb-1">&#8369;
                         {{ number_format($balanceRemaining, 2) }}</h2>
-                    <h2 class="max-md:text-xs font-semibold mb-1">
-                        {{ $appointment->id }}</h2>
                 </div>
             </div>
             <div class="flex flex-col justify-center">

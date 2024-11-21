@@ -79,7 +79,7 @@ class InventoryController extends Controller
             'item_name' => 'required|string',
             'branch_id' => 'required|exists:branches,id',
             'quantity' => 'required|integer|min:0',
-            'serial_number' => 'required|string|max:10',
+            'serial_number' => 'required|string|max:10|unique:inventories,serial_number',
             'cost_per_item' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
@@ -139,7 +139,7 @@ class InventoryController extends Controller
             'item_name' => 'required|string',
             'branch_id' => 'required|exists:branches,id',
             'quantity' => 'required|integer|min:0',
-            'serial_number' => 'required|string|max:10',
+            'serial_number' => 'required|string|max:10|unique:inventories,serial_number',
             'cost_per_item' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
