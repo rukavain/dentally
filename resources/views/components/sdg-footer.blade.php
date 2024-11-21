@@ -11,7 +11,7 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        padding: 10px;
+        padding: 0 5px 5px 0;
         display: flex;
         justify-content: flex-end;
         align-items: center;
@@ -21,12 +21,14 @@
 
     .sdg-image {
         height: 40px;
+        opacity: .4;
         width: auto;
         transition: transform 0.3s ease;
     }
 
     .sdg-image:hover {
         transform: scale(1.1);
+        opacity: 1;
     }
 
     @media (max-width: 768px) {

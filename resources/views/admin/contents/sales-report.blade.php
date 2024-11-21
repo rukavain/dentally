@@ -154,12 +154,12 @@
             } else if (count === 3) {
                 container.className = 'grid grid-cols-3 gap-2 p-2';
                 visibleCharts.forEach(chart => {
-                    chart.querySelector('div').className = 'w-full h-40';
+                    chart.querySelector('div').className = 'w-full h-36';
                 });
             } else {
                 container.className = 'grid grid-cols-2 gap-2 p-2';
                 visibleCharts.forEach(chart => {
-                    chart.querySelector('div').className = 'w-full h-40';
+                    chart.querySelector('div').className = 'w-full h-36';
                 });
             }
 
