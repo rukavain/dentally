@@ -9,9 +9,10 @@ use App\Models\Patient;
 use App\Models\Payment;
 use App\Models\AuditLog;
 use App\Models\Appointment;
-use Illuminate\Http\Request;
-use App\Models\PaymentHistory;
 use App\Models\TemporaryPayment;
+use App\Models\PaymentHistory;
+use App\Models\ToothRecord;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\ClientPendingPayment;
@@ -19,12 +20,13 @@ use App\Notifications\ClientCancelledAppointment;
 
 class ClientController extends Controller
 {
-    public function dashboard() {
-        if(Auth::user()->role === 'admin') {
+    public function dashboard()
+    {
+        if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
-        } elseif(Auth::user()->role === 'staff') {
+        } elseif (Auth::user()->role === 'staff') {
             return redirect()->route('staff.dashboard');
-        } elseif(Auth::user()->role === 'dentist') {
+        } elseif (Auth::user()->role === 'dentist') {
             return redirect()->route('dentist.dashboard');
         } else {
             return redirect()->route('client.overview', Auth::user()->patient_id);
@@ -39,45 +41,73 @@ class ClientController extends Controller
         $patient = Patient::find($id);
 
         $appointments = Appointment::where('patient_id', $id)
-                                    // ->where('status', '!=', 'cancelled')
-                                    ->with('procedure')
-                                    ->paginate(7);
+            // ->where('status', '!=', 'cancelled')
+            ->with('procedure')
+            ->paginate(7);
 
         $appointmentIds = $appointments->pluck('id');
 
         // Fetch payments related to the patient's appointments
         $payments = Appointment::where('patient_id', $id)
-                ->where('pending', 'Approved')
-                ->where('status', '!=' , 'Cancelled')
-                ->with(['procedure', 'dentist', 'payment'])
-                ->paginate(7);
+            ->where('pending', 'Approved')
+            ->where('status', '!=', 'Cancelled')
+            ->with(['procedure', 'dentist', 'payment'])
+            ->paginate(7);
         // Pass the patient data to the profile view
         return view('client.contents.overview', compact('patient', 'appointments', 'payments'));
     }
 
-    public function clientRecords($id){
-
+    public function clientRecords($id)
+    {
+        // Get X-ray images
         $xrayImages = Image::where('patient_id', $id)
-                ->where('image_type', 'xray')
-                ->get();
+            ->where('image_type', 'xray')
+            ->get();
 
+        // Get contract image
         $contractImage = Image::where('patient_id', $id)
-                ->where('image_type', 'contract')
-                ->first();
+            ->where('image_type', 'contract')
+            ->first();
 
-        $backgroundImage = Image::where('patient_id', $id)
-                ->where('image_type', 'background')
-                ->first();
-
+        // Get payment proof images
         $paymentProof = Image::where('patient_id', $id)
-                ->where('image_type', 'proof_of_payment')
-                ->get();
+            ->where('image_type', 'proof_of_payment')
+            ->get();
 
+        // Get dental records
+        $teethRecords = ToothRecord::with('note')
+            ->where('patient_id', $id)
+            ->get()
+            ->keyBy('tooth_number');
 
-        return view('client.contents.client-records', compact('xrayImages', 'contractImage', 'backgroundImage', 'paymentProof'));
+        // Ensure all 32 teeth are represented with proper object structure
+        $completeTeeth = [];
+        for ($i = 1; $i <= 32; $i++) {
+            if (isset($teethRecords[$i])) {
+                $completeTeeth[$i] = [
+                    'tooth_number' => $i,
+                    'status' => $teethRecords[$i]->status,
+                    'note' => $teethRecords[$i]->note ? ['note_text' => $teethRecords[$i]->note->note_text] : null
+                ];
+            } else {
+                $completeTeeth[$i] = [
+                    'tooth_number' => $i,
+                    'status' => 'normal',
+                    'note' => null
+                ];
+            }
+        }
+
+        return view('client.contents.client-records', compact(
+            'xrayImages',
+            'contractImage',
+            'paymentProof',
+            'completeTeeth'
+        ));
     }
 
-    public function createClientPayment($appointmentId) {
+    public function createClientPayment($appointmentId)
+    {
         // Retrieve the appointment with related patient and procedure data
         $appointment = Appointment::with(['patient', 'procedure', 'dentist'])->find($appointmentId);
 
@@ -93,7 +123,8 @@ class ClientController extends Controller
     }
 
     //temporary payment
-    public function storeClientPartialPayment(Request $request) {
+    public function storeClientPartialPayment(Request $request)
+    {
         // Validate the incoming request
         $request->validate([
             'appointment_id' => 'required|exists:appointments,id',
@@ -111,8 +142,8 @@ class ClientController extends Controller
         }
 
         $existingPendingPayment = TemporaryPayment::where('payment_id', $appointment->payment->id)
-        ->where('status', 'pending')
-        ->first();
+            ->where('status', 'pending')
+            ->first();
 
         if ($existingPendingPayment) {
             return response()->json(['success' => false, 'message' => 'There is already a pending payment for this appointment. Please wait for it to be approved before submitting another payment.']);
@@ -143,7 +174,8 @@ class ClientController extends Controller
         return response()->json(['success' => true, 'message' => 'Payment submitted for review.']);
     }
 
-    public function showClientPaymentHistory($appointmentId) {
+    public function showClientPaymentHistory($appointmentId)
+    {
         // Retrieve the appointment with related patient and procedure data
         $appointment = Appointment::with(['patient', 'procedure'])->find($appointmentId);
 
@@ -153,7 +185,7 @@ class ClientController extends Controller
         }
 
         // Retrieve payment history for the appointment
-        $paymentHistory = PaymentHistory::whereHas('payment', function($query) use ($appointmentId) {
+        $paymentHistory = PaymentHistory::whereHas('payment', function ($query) use ($appointmentId) {
             $query->where('appointment_id', $appointmentId);
         })->get();
 
@@ -164,7 +196,8 @@ class ClientController extends Controller
         return view('client.contents.client-payment-history', compact('appointment', 'paymentHistory', 'totalPaid', 'balanceRemaining'));
     }
 
-    public function cancelAppointment($appointmentId){
+    public function cancelAppointment($appointmentId)
+    {
         $appointment = Appointment::with(['patient', 'procedure', 'dentist'])->find($appointmentId);
 
         $appointment->status = 'Cancelled';
@@ -173,11 +206,10 @@ class ClientController extends Controller
         $appointment->save();
 
         $users = User::whereIn('role', ['admin', 'staff'])->get();
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $user->notify(new ClientCancelledAppointment($appointment));
         }
 
         return redirect()->route('client.overview', $appointment->patient_id)->with('success', 'Appointment cancelled');
     }
-
 }

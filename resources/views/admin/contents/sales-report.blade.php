@@ -7,7 +7,8 @@
         <div class="flex items-center justify-between py-2 border-b">
             <h1 class="font-bold text-2xl max-md:text-lg">Sales Report</h1>
             <div class="w-48">
-                <select id="branch" name="branch" class="w-full text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                <select id="branch" name="branch"
+                    class="w-full text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
                     <option value="">All Branches</option>
                     @foreach ($branches as $branch)
                         <option value="{{ $branch->id }}" {{ request('branch') == $branch->id ? 'selected' : '' }}>
@@ -77,8 +78,10 @@
                                 @foreach ($paymentHistories as $history)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-2 py-0.5">{{ $history->created_at->format('M d') }}</td>
-                                        <td class="px-2 py-0.5">{{ $history->payment->appointment->patient->first_name }} {{ $history->payment->appointment->patient->last_name }}</td>
-                                        <td class="px-2 py-0.5 text-right">{{ $history->payment->appointment->branch->branch_loc }}</td>
+                                        <td class="px-2 py-0.5">{{ $history->payment->appointment->patient->first_name }}
+                                            {{ $history->payment->appointment->patient->last_name }}</td>
+                                        <td class="px-2 py-0.5 text-right">
+                                            {{ $history->payment->appointment->branch->branch_loc }}</td>
                                         <td class="px-2 py-0.5 text-center">
                                             <span class="px-1 py-0.5 text-[8px] rounded-full inline-block min-w-[36px] ">
                                                 ₱{{ number_format($history->paid_amount, 2) }}
@@ -111,10 +114,14 @@
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-2 py-0.5">{{ $procedure['procedure'] }}</td>
                                         <td class="px-2 py-0.5 text-center">{{ $procedure['count'] }}</td>
-                                        <td class="px-2 py-0.5 text-right">₱{{ number_format($procedure['total_amount'], 2) }}</td>
+                                        <td class="px-2 py-0.5 text-right">
+                                            ₱{{ number_format($procedure['total_amount'], 2) }}</td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="3" class="px-2 py-2 text-center text-gray-500">No procedures today</td></tr>
+                                    <tr>
+                                        <td colspan="3" class="px-2 py-2 text-center text-gray-500">No procedures today
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -191,7 +198,9 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false },
+                    legend: {
+                        display: false
+                    },
                     tooltip: {
                         callbacks: {
                             label: (context) => '₱' + context.raw.toLocaleString()
@@ -203,13 +212,17 @@
                         beginAtZero: true,
                         ticks: {
                             callback: (value) => '₱' + value.toLocaleString(),
-                            font: { size: 8 },
+                            font: {
+                                size: 8
+                            },
                             maxTicksLimit: 4
                         }
                     },
                     x: {
                         ticks: {
-                            font: { size: 8 },
+                            font: {
+                                size: 8
+                            },
                             maxRotation: 0,
                             autoSkip: true,
                             maxTicksLimit: 6
@@ -238,7 +251,8 @@
             Object.entries(toggles).forEach(([toggleId, chartId]) => {
                 document.getElementById(toggleId).addEventListener('change', function() {
                     const chartDiv = document.getElementById(chartId);
-                    this.checked ? chartDiv.classList.remove('hidden') : chartDiv.classList.add('hidden');
+                    this.checked ? chartDiv.classList.remove('hidden') : chartDiv.classList.add(
+                        'hidden');
                     updateChartLayout();
                 });
             });

@@ -36,7 +36,7 @@
                         class=" flex text-sm items-center justify-start gap-2 py-1 px-4 font-semibold border border-gray-500 rounded-md hover:border-gray-700 hover:shadow-sm transition-all">
                         <img class="h-4" src="{{ asset('assets/images/background.png') }}" alt="">
                         <h1>
-                            Background</h1>
+                            Dental Record</h1>
                     </a>
                     <a href="{{ route('patient.xray', $patient->id) }}"
                         class=" flex text-sm items-center justify-start gap-2 py-1 px-4 font-semibold border border-gray-500 rounded-md hover:border-gray-700 hover:shadow-sm transition-all">
@@ -90,10 +90,10 @@
         <section class="max-lg:mt-12">
             <div class="flex items-center gap-4 mb-6">
                 <h1 class="text-3xl font-bold ml-4">Personal Information</h1>
-                    <button onclick="document.getElementById('hmoModal').classList.remove('hidden')"
-                        class="flex text-sm items-center justify-start gap-2 py-1 px-4 font-semibold border border-gray-500 rounded-md hover:border-gray-700 hover:shadow-sm transition-all">
-                        <h1>HMO</h1>
-                    </button>
+                <button onclick="document.getElementById('hmoModal').classList.remove('hidden')"
+                    class="flex text-sm items-center justify-start gap-2 py-1 px-4 font-semibold border border-gray-500 rounded-md hover:border-gray-700 hover:shadow-sm transition-all">
+                    <h1>HMO</h1>
+                </button>
             </div>
             <form method="POST" action="{{ route('update.patient', $patient->id) }}">
                 @method('PUT')
@@ -177,16 +177,7 @@
                             @enderror
                         </label>
 
-                        <label class="flex flex-col flex-1 min-w-[45%] max-md:text-sm" for="phone_number">
-                            <h1>Phone number</h1>
-                            <input class="border border-gray-400 py-2 px-4 rounded-md" name="phone_number" type="text"
-                                autocomplete="off" oninput="validateInput('phone_number')"
-                                value="{{ old('phone_number', $patient->phone_number) }}" id="phone_number">
-                            @error('phone_number')
-                                <span id="phone_number_error"
-                                    class="validation-message text-red-600 text-xs p-1 rounded-md show">{{ $message }}</span>
-                            @enderror
-                        </label>
+
 
                         <label class="flex flex-col flex-1 min-w-[45%] max-md:text-sm" for="fb_name">
                             <h1>Facebook name</h1>
@@ -262,11 +253,13 @@
                     @csrf
                     <div class="w-full">
                         <label for="hmo">Do you have an HMO?</label>
-                        <input type="hidden" name="has_hmo" value="{{$patient->has_hmo ? '1' : '0'}}">
-                        <input type="checkbox" id="hmo" name="has_hmo" value="1" {{ $patient->has_hmo ? 'checked' : '' }} onclick="toggleHmoFields()">
+                        <input type="hidden" name="has_hmo" value="{{ $patient->has_hmo ? '1' : '0' }}">
+                        <input type="checkbox" id="hmo" name="has_hmo" value="1"
+                            {{ $patient->has_hmo ? 'checked' : '' }} onclick="toggleHmoFields()">
                     </div>
 
-                    <div id="hmoFields" class="flex flex-col flex-1" style="display: {{ $patient->has_hmo ? 'block' : 'none' }};">
+                    <div id="hmoFields" class="flex flex-col flex-1"
+                        style="display: {{ $patient->has_hmo ? 'block' : 'none' }};">
                         <div class="flex gap-4 max-md:gap-2">
                             <div class="flex flex-col flex-1">
                                 <label for="hmo_company">
@@ -275,14 +268,21 @@
                                 <select id="patient_hmo_company" name="hmo_company" onchange="toggleOtherHmoField()"
                                     class="border border-gray-400 py-2 px-4 rounded-md max-md:text-xs max-md:py-1 max-md:px-2">
                                     <option value="">Select HMO</option>
-                                    <option value="Maxicare" {{ $patient->hmo_company == 'Maxicare' ? 'selected' : '' }}>Maxicare</option>
-                                    <option value="PhilHealth" {{ $patient->hmo_company == 'PhilHealth' ? 'selected' : '' }}>PhilHealth</option>
-                                    <option value="Medicard" {{ $patient->hmo_company == 'Medicard' ? 'selected' : '' }}>Medicard</option>
-                                    <option value="Intellicare" {{ $patient->hmo_company == 'Intellicare' ? 'selected' : '' }}>Intellicare</option>
-                                    <option value="other" {{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? 'selected' : '' }}>Other</option>
+                                    <option value="Maxicare" {{ $patient->hmo_company == 'Maxicare' ? 'selected' : '' }}>
+                                        Maxicare</option>
+                                    <option value="PhilHealth"
+                                        {{ $patient->hmo_company == 'PhilHealth' ? 'selected' : '' }}>PhilHealth</option>
+                                    <option value="Medicard" {{ $patient->hmo_company == 'Medicard' ? 'selected' : '' }}>
+                                        Medicard</option>
+                                    <option value="Intellicare"
+                                        {{ $patient->hmo_company == 'Intellicare' ? 'selected' : '' }}>Intellicare</option>
+                                    <option value="other"
+                                        {{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? 'selected' : '' }}>
+                                        Other</option>
                                 </select>
                             </div>
-                            <div id="patient_otherHmo" class="flex flex-col flex-1" style="display: {{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? 'block' : 'none' }};">
+                            <div id="patient_otherHmo" class="flex flex-col flex-1"
+                                style="display: {{ !in_array($patient->hmo_company, ['', 'Maxicare', 'PhilHealth', 'Medicard', 'Intellicare']) ? 'block' : 'none' }};">
                                 <label for="other_hmo_name">
                                     <h1 class="max-md:text-sm">Enter HMO Company Name:</h1>
                                 </label>
@@ -294,7 +294,8 @@
                         <div class="flex gap-4 max-md:gap-2">
                             <label for="hmo_number" class="flex flex-col flex-1">
                                 <h1 class="max-md:text-sm">HMO Number:</h1>
-                                <input type="text" id="hmo_number" name="hmo_number" value="{{ $patient->hmo_number }}"
+                                <input type="text" id="hmo_number" name="hmo_number"
+                                    value="{{ $patient->hmo_number }}"
                                     class="w-full max-md:text-sm max-md:py-1 max-md:px-2 border border-gray-400 py-2 px-4 rounded-md">
                             </label>
                             <label for="hmo_type" class="flex flex-col flex-1">

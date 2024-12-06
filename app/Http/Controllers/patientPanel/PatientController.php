@@ -46,7 +46,7 @@ class PatientController extends Controller
                     break;
                 case 'name':
                     $activePatientQuery->orderBy('last_name', $direction)
-                                     ->orderBy('first_name', $direction);
+                        ->orderBy('first_name', $direction);
                     break;
                 case 'date_added':
                     $activePatientQuery->orderBy('created_at', $direction);
@@ -98,7 +98,7 @@ class PatientController extends Controller
                     break;
                 case 'name':
                     $archivedPatientQuery->orderBy('last_name', $direction)
-                                     ->orderBy('first_name', $direction);
+                        ->orderBy('first_name', $direction);
                     break;
                 case 'date_added':
                     $archivedPatientQuery->orderBy('created_at', $direction);
@@ -219,7 +219,7 @@ class PatientController extends Controller
             'gender' => 'required',
             'date_of_birth' => 'required|date',
             'fb_name' => 'required|string|max:255',
-            'phone_number' => 'nullable|string|max:12|unique:patients,phone_number,'.$id.',id',
+            'phone_number' => 'nullable|string|max:12|unique:patients,phone_number,' . $id . ',id',
             'next_visit' => 'required|date',
             'branch_id' => 'required|exists:branches,id',
         ]);
@@ -249,7 +249,7 @@ class PatientController extends Controller
             'changes' => json_encode($request->all()), // Log the request data
         ]);
 
-        return redirect()->route('show.patient', compact('patient'))->with('success','Patient updated successfully!');
+        return redirect()->route('show.patient', compact('patient'))->with('success', 'Patient updated successfully!');
     }
 
     public function updateHmo(Request $request, $id)
@@ -304,12 +304,14 @@ class PatientController extends Controller
     public function patientBackground(Request $request, $id)
     {
         $patient = Patient::findOrFail($id);
+        $branches = Branch::all();
+
         $backgroundImages = Image::where('patient_id', $id)
             ->where('image_type', 'background')
             ->get();
 
 
-        return view('client.patients.patient-background', compact('patient', 'backgroundImages'));
+        return view('client.patients.patient-background', compact('patient', 'backgroundImages', 'branches'));
     }
     public function patientXray(Request $request, $id)
     {

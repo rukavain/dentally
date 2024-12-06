@@ -24,8 +24,7 @@
                 <nav class="flex flex-wrap gap-5">
                     <button
                         class="text-gray-500 pb-2 border-b-2 border-transparent focus:outline-none hover:border-b-green-300 transition-all"
-                        data-tab-target="#tab1">
-                        Patient Background
+                        data-tab-target="#tab1">Dental Chart
                     </button>
                     <button
                         class="text-gray-500 pb-2 border-b-2 border-transparent focus:outline-none hover:border-b-green-300 transition-all"
@@ -35,10 +34,8 @@
                         class="text-gray-500 pb-2 border-b-2 border-transparent focus:outline-none hover:border-b-green-300 transition-all"
                         data-tab-target="#tab3">Contract
                     </button>
-
                 </nav>
             </div>
-            <!-- Table -->
 
             {{-- Image Modal --}}
             <div id="imageModal" class="image-modal hidden">
@@ -51,23 +48,10 @@
             </div>
 
             <div>
-                <div id="tab1" class="tab-content text-gray-700 hidden max-h-max">
-                    {{-- <h1 class="font-bold mt-9 mb-4 text-2xl">Patient Background</h1> --}}
-                    @if ($backgroundImage)
-                        <div class="flex justify-center">
-                            <img src="{{ asset('storage/' . $backgroundImage->image_path) }}" alt="Contract Image"
-                                class="img-fluid max-h-96"
-                                onclick="openModal('{{ asset('storage/' . $backgroundImage->image_path) }}')">
-                        </div>
-                    @else
-                        <div class="flex flex-col justify-center items-center my-4 gap-4">
-                            <img class="h-48" src="{{ asset('assets/images/background.png') }}" alt="">
-                            <p class="text-center">No patient background images uploaded for this patient.</p>
-                        </div>
-                    @endif
+                <div id="tab1" class="tab-content text-gray-700 max-h-max">
+                    @include('client.contents.dental-chart', ['completeTeeth' => $completeTeeth ?? []])
                 </div>
                 <div id="tab2" class="tab-content text-gray-700 hidden max-h-max">
-                    {{-- <h1 class="font-bold mt-9 mb-4 text-2xl">X-rays</h1> --}}
                     @if ($xrayImages->isEmpty())
                         <div class="flex flex-col justify-center items-center my-5 gap-4">
                             <img class="h-48" src="{{ asset('assets/images/x-ray.png') }}" alt="">
@@ -84,7 +68,6 @@
                     @endif
                 </div>
                 <div id="tab3" class="tab-content text-gray-700 hidden max-h-max">
-                    {{-- <h1 class="font-bold mt-9 mb-4 text-2xl">Contract</h1> --}}
                     @if ($contractImage)
                         <div class="flex justify-center">
                             <img src="{{ asset('storage/' . $contractImage->image_path) }}" alt="Contract Image"

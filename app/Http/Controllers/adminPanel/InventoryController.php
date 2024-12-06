@@ -31,9 +31,9 @@ class InventoryController extends Controller
 
         // Apply search if present
         if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('item_name', 'like', "%{$search}%")
-                  ->orWhere('serial_number', 'like', "%{$search}%");
+                    ->orWhere('serial_number', 'like', "%{$search}%");
             });
         }
 
@@ -139,7 +139,7 @@ class InventoryController extends Controller
             'item_name' => 'required|string',
             'branch_id' => 'required|exists:branches,id',
             'quantity' => 'required|integer|min:0',
-            'serial_number' => 'required|string|max:10|unique:inventories,serial_number,'.$id.',id',
+            'serial_number' => 'required|string|max:10|unique:inventories,serial_number,' . $id . ',id',
             'cost_per_item' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
@@ -192,6 +192,4 @@ class InventoryController extends Controller
         return redirect()->route('inventory')->with('success', 'Item deleted successfully!');
         session()->flash('success', 'Item deleted successfully!');
     }
-
-
 }
