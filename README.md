@@ -1,8 +1,9 @@
 <h1>Dentally: A Patient Record Tracking System</h1>
 <br>
-**Front-end is made in Tailwind CSS**
+## 
+<strong>Front-end was designed with Tailwind CSS</strong>
 <br>
-**Back-end is made with Laravel 10**
+<strong>Back-end was made with Laravel 10</strong>
 <h1>Features: </h1>
 <p>
     # User Roles and Permissions
